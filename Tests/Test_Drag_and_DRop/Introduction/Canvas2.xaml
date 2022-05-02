@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Test_Drag_and_DRop.Introduction.Canvas2"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Test_Drag_and_DRop.Introduction"
+             mc:Ignorable="d" 
+             x:Name="root"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border BorderBrush="Blue" BorderThickness="3">
+        <Canvas 
+        x:Name="canvas"
+        AllowDrop="True"
+        DragLeave="canvas_DragLeave"
+        Drop="canvas_Drop"
+        DragOver="canvas_DragOver"
+        Background="Transparent">
+            <Rectangle
+            IsHitTestVisible="{Binding ElementName=root, Path=IsChildHitTestVisible}"
+            x:Name="blueRectangle"
+            Canvas.Left="50"
+            Canvas.Top="50"
+            Width="50"
+            Height="50"
+            Fill="Blue"
+            MouseMove="blueRectangle_MouseMove"/>
+        </Canvas>
+    </Border>
+</UserControl>
