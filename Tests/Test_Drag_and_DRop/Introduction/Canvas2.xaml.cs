@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+// https://www.youtube.com/watch?v=THV5BW5WW_o
+
 namespace Test_Drag_and_DRop.Introduction
 {
     /// <summary>
