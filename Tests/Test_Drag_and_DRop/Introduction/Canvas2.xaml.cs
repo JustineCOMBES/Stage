@@ -20,25 +20,35 @@ namespace Test_Drag_and_DRop.Introduction
     /// </summary>
     public partial class Canvas2 : UserControl
     {
-        public static readonly DependencyProperty  IsChildHitTestVisibleProperty = DependencyProperty.Register("MyProperty", typeof(bool), typeof(Canvas2), new PropertyMetadata(true));
+        public static readonly DependencyProperty IsChildHitTestVisibleProperty = DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(Canvas2), new PropertyMetadata(true));
 
         public bool IsChildHitTestVisible
         {
             get { return (bool)GetValue(IsChildHitTestVisibleProperty); }
-            get { SetValue(IsChildHitTestVisibleProperty, value); }
+            set { SetValue(IsChildHitTestVisibleProperty, value); }
+        }
+
+        public static readonly DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(Brush), typeof(Canvas2), new PropertyMetadata(Brushes.Black));
+
+        public Brush Color
+        {
+            get { return (Brush)GetValue(ColorProperty); }
+            set { SetValue(ColorProperty, value); }
         }
 
         public Canvas2()
         {
             InitializeComponent();
         }
+        
 
         private void blueRectangle_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                //blueRectangle.IsHitTestVisible = false;
+                IsChildHitTestVisible = false;
                 DragDrop.DoDragDrop(blueRectangle, new DataObject(DataFormats.Serializable, blueRectangle), DragDropEffects.Move);
+                IsChildHitTestVisible = true;
             }
         }
 

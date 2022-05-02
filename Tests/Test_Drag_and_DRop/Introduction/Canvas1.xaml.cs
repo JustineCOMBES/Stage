@@ -20,6 +20,14 @@ namespace Test_Drag_and_DRop.Introduction
     /// </summary>
     public partial class Canvas1xaml : UserControl
     {
+        public static readonly DependencyProperty IsChildHitTestVisibleProperty = DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(Canvas1xaml), new PropertyMetadata(true));
+
+        public bool IsChildHitTestVisible
+        {
+            get { return (bool)GetValue(IsChildHitTestVisibleProperty); }
+            set { SetValue(IsChildHitTestVisibleProperty, value); }
+        }
+
         public Canvas1xaml()
         {
             InitializeComponent();
@@ -29,7 +37,9 @@ namespace Test_Drag_and_DRop.Introduction
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                IsChildHitTestVisible = false;
                 DragDrop.DoDragDrop(redRectangle, new DataObject(DataFormats.Serializable, redRectangle), DragDropEffects.Move);
+                IsChildHitTestVisible = true;
             }
         }
 

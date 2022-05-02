@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              x:Name="root"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border BorderBrush="Blue" BorderThickness="3">
+    <Border BorderBrush="{Binding Color,ElementName=root}" BorderThickness="3">
         <Canvas 
         x:Name="canvas"
         AllowDrop="True"
@@ -16,14 +16,15 @@
         DragOver="canvas_DragOver"
         Background="Transparent">
             <Rectangle
-            IsHitTestVisible="{Binding ElementName=root, Path=IsChildHitTestVisible}"
+            
             x:Name="blueRectangle"
             Canvas.Left="50"
             Canvas.Top="50"
             Width="50"
             Height="50"
-            Fill="Blue"
-            MouseMove="blueRectangle_MouseMove"/>
+            Fill="{Binding Color,ElementName=root}"
+            MouseMove="blueRectangle_MouseMove"
+            IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}"/>
         </Canvas>
     </Border>
 </UserControl>

@@ -14,9 +14,14 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-
-        <Introduction:Canvas1xaml Grid.Column="0"/>
-        <Introduction:Canvas2 Grid.Column="1"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Introduction:Canvas2 Grid.Column="0" Grid.Row="0" Color="Red"/>
+        <Introduction:Canvas2 Grid.Column="1" Grid.Row="0" Color="Blue"/>
+        <Introduction:Canvas2 Grid.Column="0" Grid.Row="1" Color="GreenYellow"/>
+        <Introduction:Canvas2 Grid.Column="1" Grid.Row="1" Color="Fuchsia"/>
     </Grid>
     
 </Window>

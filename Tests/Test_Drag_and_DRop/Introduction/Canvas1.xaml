@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Test_Drag_and_DRop.Introduction"
              mc:Ignorable="d" 
+             x:Name="root"
              d:DesignHeight="450" d:DesignWidth="800">
     <Border BorderBrush="Red" BorderThickness="3">
         <Canvas 
@@ -16,6 +17,7 @@
         Background="Transparent">
             <Rectangle
             x:Name="redRectangle"
+            IsHitTestVisible="{Binding ElementName=root, Path=IsChildHitTestVisible}"
             Canvas.Left="50"
             Canvas.Top="50"
             Width="50"
