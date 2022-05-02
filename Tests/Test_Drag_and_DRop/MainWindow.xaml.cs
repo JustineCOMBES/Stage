@@ -13,6 +13,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using System.IO;
+using Microsoft.Win32;
+using System.Xaml;
+using System.Windows.Markup;
+
 namespace Test_Drag_and_DRop
 {
     /// <summary>
@@ -26,27 +31,10 @@ namespace Test_Drag_and_DRop
             
         }
 
-        //private void redRectangle_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    if(e.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        DragDrop.DoDragDrop(redRectangle, redRectangle, DragDropEffects.Move);
-        //    }
-        //}
-
-        //private void Canvas_Drop(object sender, DragEventArgs e)
-        //{
-        //    //Point dropPosition = e.GetPosition(canvas);
-        //    //Canvas.SetLeft(redRectangle, dropPosition.X);
-        //    //Canvas.SetTop(redRectangle, dropPosition.Y);
-
-        //}
-
-        //private void canvas_DragOver(object sender, DragEventArgs e)
-        //{
-        //    Point dropPosition = e.GetPosition(canvas);
-        //    Canvas.SetLeft(redRectangle, dropPosition.X);
-        //    Canvas.SetTop(redRectangle, dropPosition.Y);
-        //}
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            // https://www.youtube.com/watch?v=kI3ILsnt7JE
+            //https://askcodez.com/comment-creer-et-connecter-des-boutons-controles-utilisateur-personnalises-avec-des-lignes-a-laide-de-formulaires-windows.html
+        }
     }
 }

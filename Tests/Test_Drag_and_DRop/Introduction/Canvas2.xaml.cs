@@ -22,6 +22,8 @@ namespace Test_Drag_and_DRop.Introduction
     /// </summary>
     public partial class Canvas2 : UserControl
     {
+        Point dropPosition;
+
         public static readonly DependencyProperty IsChildHitTestVisibleProperty = DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(Canvas2), new PropertyMetadata(true));
 
         public bool IsChildHitTestVisible
@@ -78,7 +80,7 @@ namespace Test_Drag_and_DRop.Introduction
 
             if (data is UIElement element)
             {
-                Point dropPosition = e.GetPosition(canvas);
+                dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
 
@@ -88,6 +90,10 @@ namespace Test_Drag_and_DRop.Introduction
                 }
 
             }
+        }
+        public Point getData()
+        {
+            return(dropPosition);
         }
     }
 }
