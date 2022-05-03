@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Introduction="clr-namespace:Test_Drag_and_DRop.Introduction"
         xmlns:local="clr-namespace:Test_Drag_and_DRop"
+        xmlns:local2="clr-namespace:Test_Drag_and_DRop.Introduction"
         mc:Ignorable="d"
         Title="DragDrop" 
         Height="450" 
@@ -12,8 +13,8 @@
         Name="MainW">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -21,11 +22,13 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Introduction:Canvas2 Grid.Column="0" Grid.Row="0" Color="Red"/>
+        <Introduction:Canvas2 Grid.Column="1" Grid.Row="0" Color="Red"/>
         <Introduction:Canvas2 Grid.Column="2" Grid.Row="0" Color="Blue"/>
-        <Introduction:Canvas2 Grid.Column="0" Grid.Row="2" Color="GreenYellow"/>
+        <Introduction:Canvas2 Grid.Column="1" Grid.Row="2" Color="GreenYellow"/>
         <Introduction:Canvas2 Grid.Column="2" Grid.Row="2" Color="Fuchsia"/>
-        <Button Name="Save" Grid.Column="1" Grid.Row="1" Click="Save_Click">Save Here</Button>
+        <Button Name="Save" Grid.Column="0" Grid.Row="1" Click="Save_Click">Save</Button>
+
+
     </Grid>
     
 </Window>
