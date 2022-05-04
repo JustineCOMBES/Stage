@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Test_Drag_and_DRop.Introduction
+namespace essai_liste
 {
     /// <summary>
-    /// Logique d'interaction pour Link.xaml
+    /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class Link : UserControl
+    public partial class MainWindow : Window
     {
-        public Link()
+        public MainWindow()
         {
             InitializeComponent();
         }

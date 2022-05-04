@@ -1,0 +1,20 @@
+ ----- Prise De Notes -----
+
+- ??                      --- return(a) ?? (a = 5)  --> Si a n'est pas NULL retourne a, sinon a = 5.
+- ??=                     --- a ??= b               --> Si b est NULL, b = a.
+- ObservableCollection<T> --- Type de donnée. Ressemble à une liste de type T mais un notification est envoyée à chaque changement. L'index commence à 0.
+- region                  --- Une region est comme un tiroir dans lequel on rage des attribut ou des opérations. L'objectif est de ranger le code pour le rendre plus lisible. N'affecte pas le code lui même.
+- random.Next             --- Random est une classe pouvant donner des entiers aléatoires. random.Next() donne un entrier positif aléatoire, random.Next(int) donne un entier positif inférieur à l'éntier 
+			      et random.Next(int, int) donne un entier dans la plage spécifiée.
+- ProprtyChanged          ---
+public event PropertyChangedEventHandler PropertyChanged;                  // liste d'évènements auquel on peut ajouter/retirer un délégué
+
+protected virtual void OnPropertyChanged(string propertyName)
+{
+	PropertyChangedEventHandler handler = PropertyChanged;             // Pour si jamais PropertyChanged est NULL et qu'un abonnement est fait pendent ce temps
+	if (handler != null)                                               // Dans le cas où il n'est pas NULL
+		handler(this, new PropertyChangedEventArgs(propertyName)); // Chaque délégué est appelé séparément. Prévient les abonnés que l'évènement est arrivé.
+}
+- Nodes.ToList().ForEach(x => x.IsHighlighted = false); // Pour chaque élément de la liste de Nodes, mettre IsHighlight à false.
+-
+- https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview?redirectedfrom=MSDN&view=netframeworkdesktop-4.8

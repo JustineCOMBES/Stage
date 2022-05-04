@@ -18,6 +18,9 @@ using Microsoft.Win32;
 using System.Xaml;
 using System.Windows.Markup;
 
+// https://www.youtube.com/watch?v=kI3ILsnt7JE
+// https://askcodez.com/comment-creer-et-connecter-des-boutons-controles-utilisateur-personnalises-avec-des-lignes-a-laide-de-formulaires-windows.html
+// https://www.codeproject.com/Articles/182683/NetworkView-A-WPF-custom-control-for-visualizing-a
 namespace Test_Drag_and_DRop
 {
     /// <summary>
@@ -33,8 +36,7 @@ namespace Test_Drag_and_DRop
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            // https://www.youtube.com/watch?v=kI3ILsnt7JE
-            //https://askcodez.com/comment-creer-et-connecter-des-boutons-controles-utilisateur-personnalises-avec-des-lignes-a-laide-de-formulaires-windows.html
+
         }
     }
 }
