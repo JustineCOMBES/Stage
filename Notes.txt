@@ -18,3 +18,4 @@ protected virtual void OnPropertyChanged(string propertyName)
 - Nodes.ToList().ForEach(x => x.IsHighlighted = false); // Pour chaque élément de la liste de Nodes, mettre IsHighlight à false.
 -
 - https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview?redirectedfrom=MSDN&view=netframeworkdesktop-4.8
+- Ne pas oublier de CAST le type object -> ToDo m = (ToDo)obj; 
