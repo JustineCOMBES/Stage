@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Reflection;
 
 namespace essai_liste
 {
@@ -32,12 +33,23 @@ namespace essai_liste
             this.addTask(task);
             this.addTask(task2);
             this.addTask(task3);
-            mylistbox.ItemsSource = Liste;
+            updateList();
         }
 
         public void addTask(ToDo task)
         {
             this.Liste.Add(task);
+        }
+
+        public void RemoveTask(ToDo task)
+        {
+            this.Liste.Remove(task);
+        }
+
+        public void updateList() 
+        {
+            mylistbox.ItemsSource = Liste;
+            mylistbox.Items.Refresh();
         }
 
 
@@ -97,19 +109,24 @@ namespace essai_liste
             {
                 ToDo task = new ToDo(LabelName.Text, LabelDesc.Text, LabelPrio.Text);
                 this.addTask(task);
-                mylistbox.ItemsSource = Liste;
-                mylistbox.Items.Refresh();
-
+                updateList();
             }
         }
         private void LabelSupp_Click(object sender, RoutedEventArgs e)
         {
-
+            var obj = mylistbox.SelectedItem;
+            ToDo m = (ToDo)obj;
+            RemoveTask(m);
+            updateList();
         }
 
         private void LabelSave_Click(object sender, RoutedEventArgs e)
         {
-            using (StreamWriter sw = new StreamWriter("myFile.txt"))
+            string fileName = @"C:\Github\Stage\Tests\essai_liste\myFile.txt";
+            FileStream stream = null;
+            stream = new FileStream(fileName, FileMode.Truncate);
+
+            using (StreamWriter sw = new StreamWriter(stream, Encoding.UTF8))
             {
                 foreach (ToDo s in Liste)
                 {
@@ -119,9 +136,12 @@ namespace essai_liste
                     sw.WriteLine(name);
                     sw.WriteLine(desc);
                     sw.WriteLine(prio);
+                    sw.WriteLine(" ");
                 }
             }
         }
         #endregion
+
+
     }
 }
