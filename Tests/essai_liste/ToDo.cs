@@ -29,8 +29,8 @@ namespace essai_liste
             }
         }
 
-        private int _Priority;
-        public int Priority
+        private string _Priority;
+        public string Priority
         {
             get { return _Priority; }
             set
@@ -38,17 +38,27 @@ namespace essai_liste
                 _Priority = value;
             }
         }
-        public ToDo(String Name, String Desc, int Prio) 
+        public ToDo(String Name, String Desc, string Prio) 
         {
             this._TaskName = Name;
             this._Description = Desc;
             this._Priority = Prio;
         }
+
+        public ToDo(String Name, string Prio)
+        {
+            this._TaskName = Name;
+            this._Description = "No Description";
+            this._Priority = Prio;
+        }
+
         public ToDo() 
         {
             this._TaskName = "No Name";
             this._Description = "No Description";
-            this._Priority = 0;
+            this._Priority = "0";
         }
+
+        
     }
 }
