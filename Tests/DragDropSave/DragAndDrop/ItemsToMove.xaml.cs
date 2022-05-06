@@ -85,41 +85,71 @@ namespace DragDropSave.DragAndDrop
             }
         }
 
-        
-    
-    #endregion
-        #region Elements functions
 
-            private void LabelRectangle_MouseMove(object sender, MouseEventArgs e)
-            {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                IsChildHitTestVisible = false;
-                DragDrop.DoDragDrop(LabelRectangle, new DataObject(DataFormats.Serializable, LabelRectangle), DragDropEffects.Move);
-                IsChildHitTestVisible = true;
-            }
-        }
 
         #endregion
-        #region Save & Load
+        #region Listes
+
         public List<double> Liste = new List<double>();
 
         public void addDB(double pos)
         {
-           this.Liste.Add(pos);
+            this.Liste.Add(pos);
         }
-
-        public void save() 
+        public void clearDB()
         {
-            string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
+            for (int i = 0; i < Liste.Count; i++)
+            {
+                var pos = Liste[i];
+                this.Liste.Remove(pos);
+            }
+        }
+        public List<double> Liste2 = new List<double>();
+        public void addDB2(double pos)
+        {
+            this.Liste2.Add(pos);
+        }
+        public void clearDB2()
+        {
+            for (int i = 0; i < Liste2.Count; i++)
+            {
+                var pos = Liste2[i];
+                this.Liste2.Remove(pos);
+            }
+        }
+        #endregion
+        #region Save & Load
+
+        int numberOfElement = 0;
+
+        public void save()
+        { //https://docs.microsoft.com/fr-fr/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
+            clearDB();
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "Document"; // Default file name
+            dlg.DefaultExt = ".xaml"; // Default file extension
+            dlg.Filter = "XAML (.xaml)|*.xaml|All Files (*.*)|*.*"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            string fileName="";
+            if (result == true)
+            {
+                // Save document
+                fileName = dlg.FileName;
+            }
+            else { return; }
+            // string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
             FileStream stream = null;
-            stream = new FileStream(fileName, FileMode.Truncate);
-           // double RectangleLeft = Canvas.GetLeft(LabelRectangle);
-            //double RectangleTop = Canvas.GetTop(LabelRectangle);
-            
+            stream = new FileStream(fileName, FileMode.OpenOrCreate);
+            //// double RectangleLeft = Canvas.GetLeft(LabelRectangle);
+            // //double RectangleTop = Canvas.GetTop(LabelRectangle);
+
 
             IEnumerable<UIElement> uIElements = canvas.Children.OfType<UIElement>();
-            foreach (UIElement element in uIElements) 
+            foreach (UIElement element in uIElements)
             {
                 double posTop = Canvas.GetTop(element);
                 double posLeft = Canvas.GetLeft(element);
@@ -133,22 +163,34 @@ namespace DragDropSave.DragAndDrop
                 sw.WriteLine(numberOfElement);
                 sw.WriteLine("Points");
                 foreach (double s in Liste)
-                { 
+                {
                     sw.WriteLine(s);
                     //sw.WriteLine(RectangleTop);
-                   // sw.WriteLine(" ");
-               }
+                    // sw.WriteLine(" ");
+                }
+                sw.Close();
             }
         }
 
-        public List<double> Liste2 = new List<double>();
-        public void addDB2(double pos)
-        {
-            this.Liste2.Add(pos);
-        }
+
         public void load()
         {
-            string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
+            clearAll();
+            clearDB2();
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process Open file dialog box results
+            string fileName = "";
+            if (result == true)
+            {
+                // Open document
+                fileName = dlg.FileName;
+            }
+            else { return; }
+
+            //string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
             FileStream stream = null;
             stream = new FileStream(fileName, FileMode.Open);
             StreamReader sr = new StreamReader(stream, false);
@@ -177,7 +219,8 @@ namespace DragDropSave.DragAndDrop
                     this.Liste2.Add(coordonnee);
                 }
             }
-            for(int i=10; i<= 2*numberOfElement; i=i+2) 
+
+            for (int i=0; i<= numberOfElement; i=i+2) 
             {
                 possItem(Liste2[i],Liste2[i+1]);
             }
@@ -189,7 +232,7 @@ namespace DragDropSave.DragAndDrop
         #endregion
         #region Add item
 
-        int numberOfElement = 1;
+        
         public void addItem() 
         {
             numberOfElement += 1;
@@ -201,12 +244,31 @@ namespace DragDropSave.DragAndDrop
 
         public void possItem(double possx, double possy)
         {
-            numberOfElement += 1;
             UserControlJustine NewElement = new UserControlJustine();
             canvas.Children.Add(NewElement);
-            Canvas.SetZIndex(NewElement, numberOfElement);
-            Canvas.SetLeft(NewElement, possx);
-            Canvas.SetTop(NewElement, possy);
+            Canvas.SetLeft(NewElement, possy);
+            Canvas.SetTop(NewElement, possx);
+        }
+
+        public void possConnector(double possx, double possy)
+        {
+            Connecteur NewElement = new Connecteur();
+            canvas.Children.Add(NewElement);
+            Canvas.SetLeft(NewElement, possy);
+            Canvas.SetTop(NewElement, possx);
+        }
+
+        #endregion
+        #region Clear
+        public void clearAll() 
+        {
+            int cpt = canvas.Children.Count;
+            for (int i = cpt - 1; i >= 0; i += -1)
+            {
+                UIElement Child = canvas.Children[i];
+                canvas.Children.Remove(Child);
+            }
+            numberOfElement = 0;
         }
         #endregion
     }

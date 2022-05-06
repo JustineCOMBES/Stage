@@ -57,9 +57,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connecteur.xaml.cs">
+      <DependentUpon>Connecteur.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControlJustine.xaml.cs">
       <DependentUpon>UserControlJustine.xaml</DependentUpon>
     </Compile>
+    <Page Include="Connecteur.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DragAndDrop\ItemsToMove.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

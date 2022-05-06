@@ -41,5 +41,10 @@ namespace DragDropSave
         {
             DragAndDropCanvas.addItem();
          }
+
+        private void clearbutton_Click(object sender, RoutedEventArgs e)
+        {
+            DragAndDropCanvas.clearAll();
+        }
     }
 }
