@@ -45,12 +45,6 @@ namespace DragDropSave.DragAndDrop
             set { SetValue(ColorProperty, value); }
         }
 
-        //public Shape shape
-        //{
-        //    get { return (shape) NameProperty(Shape)}
-        //}
-
-
         Point dropPosition;
         public Point getData()
         {
@@ -83,12 +77,11 @@ namespace DragDropSave.DragAndDrop
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-
                 if (!canvas.Children.Contains(element))
                 {
                     canvas.Children.Add(element);
                 }
-                
+                Canvas.SetZIndex(element, numberOfElement + 1);
             }
         }
 
@@ -107,46 +100,52 @@ namespace DragDropSave.DragAndDrop
             }
         }
 
-        //    private void LabelEllipse_MouseMove(object sender, MouseEventArgs e)
-        //    {
-        //    if (e.LeftButton == MouseButtonState.Pressed)
-        //        {
-        //            IsChildHitTestVisible = false;
-        //            DragDrop.DoDragDrop(LabelEllipse, new DataObject(DataFormats.Serializable, LabelEllipse), DragDropEffects.Move);
-        //            IsChildHitTestVisible = true;
-        //        }
-        //}
         #endregion
-        #region Save
-        //public List<double> Liste = new List<double>();
+        #region Save & Load
+        public List<double> Liste = new List<double>();
 
-        //public void addDB(double pos)
-        //{
-        //    this.Liste.Add(pos);
-        //}
+        public void addDB(double pos)
+        {
+           this.Liste.Add(pos);
+        }
 
         public void save() 
         {
             string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
             FileStream stream = null;
             stream = new FileStream(fileName, FileMode.Truncate);
-            double RectangleLeft = Canvas.GetLeft(LabelRectangle);
-            double RectangleTop = Canvas.GetTop(LabelRectangle);
-            //addDB(RectangleLeft);
-            //addDB(RectangleTop);
+           // double RectangleLeft = Canvas.GetLeft(LabelRectangle);
+            //double RectangleTop = Canvas.GetTop(LabelRectangle);
+            
+
+            IEnumerable<UIElement> uIElements = canvas.Children.OfType<UIElement>();
+            foreach (UIElement element in uIElements) 
+            {
+                double posTop = Canvas.GetTop(element);
+                double posLeft = Canvas.GetLeft(element);
+                addDB(posTop);
+                addDB(posLeft);
+            }
 
             using (StreamWriter sw = new StreamWriter(stream, Encoding.UTF8))
             {
-               // foreach (double s in Liste)
-               // {
-                    sw.WriteLine(RectangleLeft);
-                    sw.WriteLine(RectangleTop);
+                sw.WriteLine("Number of elements");
+                sw.WriteLine(numberOfElement);
+                sw.WriteLine("Points");
+                foreach (double s in Liste)
+                { 
+                    sw.WriteLine(s);
+                    //sw.WriteLine(RectangleTop);
                    // sw.WriteLine(" ");
-               // }
+               }
             }
         }
 
-       // public List<double> Liste2 = new List<double>();
+        public List<double> Liste2 = new List<double>();
+        public void addDB2(double pos)
+        {
+            this.Liste2.Add(pos);
+        }
         public void load()
         {
             string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
@@ -155,32 +154,59 @@ namespace DragDropSave.DragAndDrop
             StreamReader sr = new StreamReader(stream, false);
 
             string ligne;
-            ligne = sr.ReadLine();
-            int i = 0;
+            ligne = sr.ReadLine(); // title
+            ligne = sr.ReadLine(); // number of elements
+            double numberOfElement2 = Convert.ToDouble(ligne);
+            numberOfElement = (int)numberOfElement2;
+
+            ligne = sr.ReadLine(); // title
+
             while (ligne != null)
             {
                 //Read the next line
                 
                 if (ligne != " ") 
-                { 
-                    double coordonnee = Convert.ToDouble(ligne); 
-                
-                
-                //this.Liste2.Add(coordonnee);
-                    if(i % 2 == 0) 
-                    {
-                        Canvas.SetLeft(LabelRectangle, coordonnee);  
-                    }
-                    if (i % 2 == 1)
-                    {
-                        Canvas.SetTop(LabelRectangle, coordonnee);
-                    }
                     ligne = sr.ReadLine();
-                }
+                {   double coordonnee = 0;
+                    if (ligne != "NAN")
+                    {
+                        coordonnee = Convert.ToDouble(ligne); 
+                    }
 
-                i++;
+                     // coordonnees
+                    this.Liste2.Add(coordonnee);
+                }
             }
+            for(int i=10; i<= 2*numberOfElement; i=i+2) 
+            {
+                possItem(Liste2[i],Liste2[i+1]);
+            }
+
+            
             sr.Close();
+        }
+
+        #endregion
+        #region Add item
+
+        int numberOfElement = 1;
+        public void addItem() 
+        {
+            numberOfElement += 1;
+            UserControlJustine NewElement = new UserControlJustine();
+            canvas.Children.Add(NewElement);
+            
+            Canvas.SetZIndex(NewElement, numberOfElement);
+        }
+
+        public void possItem(double possx, double possy)
+        {
+            numberOfElement += 1;
+            UserControlJustine NewElement = new UserControlJustine();
+            canvas.Children.Add(NewElement);
+            Canvas.SetZIndex(NewElement, numberOfElement);
+            Canvas.SetLeft(NewElement, possx);
+            Canvas.SetTop(NewElement, possy);
         }
         #endregion
     }

@@ -57,10 +57,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="DragAndDrop\canvasEmpty.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="UserControlJustine.xaml.cs">
+      <DependentUpon>UserControlJustine.xaml</DependentUpon>
+    </Compile>
     <Page Include="DragAndDrop\ItemsToMove.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -73,9 +72,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DragAndDrop\canvasEmpty.xaml.cs">
-      <DependentUpon>canvasEmpty.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DragAndDrop\ItemsToMove.xaml.cs">
       <DependentUpon>ItemsToMove.xaml</DependentUpon>
     </Compile>
@@ -83,6 +79,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UserControlJustine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

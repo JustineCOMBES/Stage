@@ -29,14 +29,17 @@ namespace DragDropSave
 
         private void savebutton_Click(object sender, RoutedEventArgs e)
         {
-            test.save();
-            test2.save();
+            DragAndDropCanvas.save();
         }
 
         private void loadbutton_Click(object sender, RoutedEventArgs e)
         {
-            test.load();
-            test2.load();
+            DragAndDropCanvas.load();
         }
+        
+        private void addbutton_Click(object sender, RoutedEventArgs e)
+        {
+            DragAndDropCanvas.addItem();
+         }
     }
 }

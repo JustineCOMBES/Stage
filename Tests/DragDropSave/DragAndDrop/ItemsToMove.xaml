@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DragDropSave.DragAndDrop"
+        xmlns:local="clr-namespace:DragDropSave"
         mc:Ignorable="d"
         Height="450" Width="800"
         x:Name="root"
@@ -14,8 +14,7 @@
         DragLeave="canvas_DragLeave"
         Drop="canvas_Drop"
         DragOver="canvas_DragOver"
-        Background="Transparent"
-        
+        Background="Transparent"        
         >
         <Rectangle
             x:Name="LabelRectangle"
@@ -27,5 +26,9 @@
             IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}"
             MouseMove="LabelRectangle_MouseMove"
             />
+        <!--<local:UserControlJustine IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}"  
+            Background="{Binding Color,ElementName=root}"  
+            Canvas.Left="200"
+            Canvas.Top="200"/>-->
     </Canvas>
 </UserControl>
