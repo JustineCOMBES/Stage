@@ -54,7 +54,7 @@ namespace DragDropSave
 
         private void RemoveSelectedbutton_Click(object sender, RoutedEventArgs e)
         {
-
+            DragAndDropCanvas.clearOne();
         }
 
     }

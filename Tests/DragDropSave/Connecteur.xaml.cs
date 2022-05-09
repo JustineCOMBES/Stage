@@ -21,10 +21,58 @@ namespace DragDropSave
     /// </summary>
     public partial class Connecteur : UserControl, INotifyPropertyChanged
     {
+        PointD pt1;
+        PointD pt2;
+
+        Ellipse ellipseDebut;
+        Ellipse ellipseFin;
+        Line line;
+
         public Connecteur()
         {
             InitializeComponent();
             this.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+            Line line = new Line();
+            line.StrokeThickness = 2;
+            line.Stroke = System.Windows.Media.Brushes.Black;
+        }
+
+        public Connecteur(PointD p1, PointD p2)
+        {
+            InitializeComponent();
+            //this.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+
+            pt1 = p1;
+            pt2 = p2;
+
+            line = new Line();
+            line.StrokeThickness = 4;
+            line.Stroke = System.Windows.Media.Brushes.Gray;
+            line.X1 = pt1.X;
+            line.Y1 = pt1.Y;
+            line.X2 = pt2.X;
+            line.Y2 = pt2.Y;
+            line.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+
+            ellipseDebut = new Ellipse();
+            ellipseDebut.Width = 20;
+            ellipseDebut.Height = 20;
+            ellipseDebut.Fill = new SolidColorBrush(Colors.Red);
+            ellipseDebut.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+
+            ellipseFin = new Ellipse();
+            ellipseFin.Width = 20;
+            ellipseFin.Height = 20;
+            ellipseFin.Fill = new SolidColorBrush(Colors.Blue);
+            ellipseFin.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+
+            canvas.Children.Add(ellipseDebut);
+            canvas.Children.Add(ellipseFin);
+            canvas.Children.Add(line);
+            Canvas.SetLeft(ellipseDebut, pt1.X - ellipseDebut.Width / 2);
+            Canvas.SetTop(ellipseDebut, pt1.Y - ellipseDebut.Height / 2);
+            Canvas.SetLeft(ellipseFin, pt2.X - ellipseFin.Width / 2);
+            Canvas.SetTop(ellipseFin, pt2.Y - ellipseFin.Height / 2);
         }
         #region Added functions
 
@@ -62,18 +110,77 @@ namespace DragDropSave
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                IsChildHitTestVisible = false;
-                DragDrop.DoDragDrop(this, new DataObject(DataFormats.Serializable, this), DragDropEffects.Move);
-                IsChildHitTestVisible = true;
+                if (sender == ellipseDebut)
+                {
+                    IsChildHitTestVisible = false;
+                    DragDrop.DoDragDrop(ellipseDebut, new DataObject(DataFormats.Serializable, ellipseDebut), DragDropEffects.Move);
+                    IsChildHitTestVisible = true;
+                    line.X1 = Canvas.GetLeft(ellipseDebut) + ellipseDebut.Width / 2;
+                    line.Y1 = Canvas.GetTop(ellipseDebut) + ellipseDebut.Height / 2;
+                }
+
+                if (sender == ellipseFin)
+                {
+                    IsChildHitTestVisible = false;
+                    DragDrop.DoDragDrop(ellipseFin, new DataObject(DataFormats.Serializable, ellipseFin), DragDropEffects.Move);
+                    IsChildHitTestVisible = true;
+                    line.X2 = Canvas.GetLeft(ellipseFin) + ellipseDebut.Width / 2;
+                    line.Y2 = Canvas.GetTop(ellipseFin) + ellipseFin.Height / 2;
+                }
+
+                if (sender == line)
+                {
+                    IsChildHitTestVisible = false;
+                    DragDrop.DoDragDrop(this, new DataObject(DataFormats.Serializable, this), DragDropEffects.Move);
+                    IsChildHitTestVisible = true;
+
+                }
+
+            }
+
+        }
+
+        private void canvas_DragLeave(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Serializable);
+
+            if (data is UIElement element)
+            {
+                canvas.Children.Remove(element);
+            }
+        }
+
+        private void canvas_Drop(object sender, DragEventArgs e)
+        {
+            // empty
+        }
+
+        Point dropPosition;
+        public Point getData()
+        {
+            return (dropPosition);
+        }
+        private void canvas_DragOver(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Serializable);
+
+            if (data is UIElement element)
+            {
+                dropPosition = e.GetPosition(canvas);
+                Canvas.SetLeft(element, dropPosition.X);
+                Canvas.SetTop(element, dropPosition.Y);
+                if (!canvas.Children.Contains(element))
+                {
+                    canvas.Children.Add(element);
+                }
+
             }
         }
 
 
-
-
         #endregion
 
-        #region Start and end
+            #region Start and end
         private UserControlJustine _start;
         public UserControlJustine Start
         {
@@ -98,11 +205,22 @@ namespace DragDropSave
         #endregion
 
         #region Create and delete
-        //public void createline()
-        //{
-        //    Line line = new Line;
-            
-        //}
+
         #endregion
+
+
+    }
+
+    public class PointD
+    {
+        public double X;
+        public double Y;
+
+        public PointD(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }
+

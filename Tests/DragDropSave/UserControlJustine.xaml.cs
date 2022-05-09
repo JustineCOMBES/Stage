@@ -153,7 +153,7 @@ namespace DragDropSave
         #endregion
 
         #region X and Y
-        private double _x;
+        private double _x = 100;
         public double X
         {
             get { return _x; }
@@ -163,7 +163,7 @@ namespace DragDropSave
                 OnPropertyChanged("X");
             }
         }
-        private double _y;
+        private double _y = 100;
         public double Y
         {
             get { return _y; }
@@ -176,6 +176,7 @@ namespace DragDropSave
         #endregion
 
         #region Mouse down and selection
+
         private void LabelLeft_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.X = Canvas.GetLeft(LabelLeft);

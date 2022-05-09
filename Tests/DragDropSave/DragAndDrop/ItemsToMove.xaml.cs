@@ -82,10 +82,10 @@ namespace DragDropSave.DragAndDrop
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                if (!canvas.Children.Contains(element))
-                {
-                    canvas.Children.Add(element);
-                }
+                //if (!canvas.Children.Contains(element))
+                //{
+                //    canvas.Children.Add(element);
+                //}
                 Canvas.SetZIndex(element, numberOfElement + 1);
             }
         }
@@ -237,19 +237,21 @@ namespace DragDropSave.DragAndDrop
         #endregion
         #region Add item
 
+        List<UserControlJustine> listFeatures = new List<UserControlJustine>();
         
         public void addItem() 
         {
             numberOfElement += 1;
             UserControlJustine NewElement = new UserControlJustine();
-            canvas.Children.Add(NewElement);
-            
+            listFeatures.Add(NewElement);
+            canvas.Children.Add(NewElement);            
             Canvas.SetZIndex(NewElement, numberOfElement);
         }
 
         public void possItem(double possx, double possy)
         {
             UserControlJustine NewElement = new UserControlJustine();
+            listFeatures.Add(NewElement);
             canvas.Children.Add(NewElement);
             Canvas.SetLeft(NewElement, possy);
             Canvas.SetTop(NewElement, possx);
@@ -266,19 +268,40 @@ namespace DragDropSave.DragAndDrop
         #endregion
 
         #region Add Connector
+
+          public UserControlJustine user1 = new UserControlJustine();
+          public UserControlJustine user2 = new UserControlJustine();
+
+        public void lastClicked()
+        {
+            int max = 0;
+            int ansmax = 0;
+            
+            IEnumerable<UserControlJustine> userControls = canvas.Children.OfType<UserControlJustine>();
+            foreach (UserControlJustine element in userControls)
+            {
+                int nb = Canvas.GetZIndex(element);
+                element.X= Canvas.GetLeft(element);
+                element.Y = Canvas.GetTop(element);
+                if (nb>max && !(double.IsNaN(element.X)) && !(double.IsNaN(element.Y)))
+                {
+                    ansmax = max;
+                    max = nb;
+                    this.user2 = user1;
+                    this.user1 = element;
+                }
+                
+            }
+
+        }
+
         public void addConnector()
         {
+            lastClicked();
             numberOfElement += 1;
-            Connecteur NewElement = new Connecteur();
-            canvas.Children.Add(NewElement);
+            Connecteur NewElement = new Connecteur(new PointD(10,10),new PointD(50,50));
             Canvas.SetZIndex(NewElement, numberOfElement);
-
-            Line line = new Line();
-
-            line.X1 = NewElement.Start.X;
-            line.Y1 = NewElement.Start.Y;
-            line.X2 = NewElement.End.X;
-            line.Y2 = NewElement.End.Y;
+            canvas.Children.Add(NewElement);
         }
         #endregion
 
@@ -292,6 +315,14 @@ namespace DragDropSave.DragAndDrop
                 canvas.Children.Remove(Child);
             }
             numberOfElement = 0;
+        }
+
+        public void clearOne()
+        {
+            //lastClicked();
+            //canvas.Children.Remove(this.user1);
+            //this.user1 = this.user2;
+            //user2 = null;
         }
         #endregion
 
