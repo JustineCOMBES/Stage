@@ -16,19 +16,6 @@
         DragOver="canvas_DragOver"
         Background="Transparent"        
         >
-        <!--<Rectangle
-            x:Name="LabelRectangle"
-            Canvas.Left="50"
-            Canvas.Top="50"
-            Width="50"
-            Height="50"
-            Fill="{Binding Color,ElementName=root}"
-            IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}"
-            MouseMove="LabelRectangle_MouseMove"
-            />-->
-        <!--<local:UserControlJustine IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}"  
-            Background="{Binding Color,ElementName=root}"  
-            Canvas.Left="200"
-            Canvas.Top="200"/>-->
+        
     </Canvas>
 </UserControl>

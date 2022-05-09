@@ -12,13 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace DragDropSave
 {
     /// <summary>
     /// Logique d'interaction pour Connecteur.xaml
     /// </summary>
-    public partial class Connecteur : UserControl
+    public partial class Connecteur : UserControl, INotifyPropertyChanged
     {
         public Connecteur()
         {
@@ -45,7 +46,16 @@ namespace DragDropSave
             set { SetValue(ColorProperty, value); }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         #endregion
+
         #region Elements functions
 
         private void _OnMouseMove(object sender, MouseEventArgs e)
@@ -58,17 +68,41 @@ namespace DragDropSave
             }
         }
 
-        
 
-        private void LabelEllipse_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+
+
+        #endregion
+
+        #region Start and end
+        private UserControlJustine _start;
+        public UserControlJustine Start
         {
-            TextBox textbox = new TextBox();
-            grille.Children.Add(textbox);
-            var content = textbox.ContextMenu;
-            object item = new object();
-            content.Items.Add(item);
-
+            get { return _start; }
+            set
+            {
+                _start = value;
+                OnPropertyChanged("Start");
+            }
         }
+
+        private UserControlJustine _end;
+        public UserControlJustine End
+        {
+            get { return _end; }
+            set
+            {
+                _end = value;
+                OnPropertyChanged("End");
+            }
+        }
+        #endregion
+
+        #region Create and delete
+        //public void createline()
+        //{
+        //    Line line = new Line;
+            
+        //}
         #endregion
     }
 }

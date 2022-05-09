@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DragDropSave"
         xmlns:DragAndDrop="clr-namespace:DragDropSave.DragAndDrop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" x:Name="main">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,13 +16,15 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="50"/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        <DragAndDrop:ItemsToMove x:Name="DragAndDropCanvas" Color="Blue" Grid.Row="0" Grid.ColumnSpan="6"/>
+        <DragAndDrop:ItemsToMove x:Name="DragAndDropCanvas" Color="Blue" Grid.Row="0" Grid.ColumnSpan="8"/>
 
         <Button Grid.Row="1" Grid.Column="2" Background="LawnGreen" Click="savebutton_Click" x:Name="savebutton">
             Save
@@ -35,6 +37,12 @@
         </Button>
         <Button Grid.Row="1" Grid.Column="1" Background="LightSkyBlue" Click="clearbutton_Click" x:Name="clearbutton">
             Clear all
+        </Button>
+        <Button Grid.Row="1" Grid.Column="5" Background="Fuchsia" Click="addConnectorbutton_Click" x:Name="addConnectorbutton">
+            Add Connector
+        </Button>
+        <Button Grid.Row="1" Grid.Column="6" Background="Yellow" Click="RemoveSelectedbutton_Click" x:Name="RemoveSelectedbutton">
+            Remove selected
         </Button>
     </Grid>
 </Window>

@@ -46,5 +46,16 @@ namespace DragDropSave
         {
             DragAndDropCanvas.clearAll();
         }
+
+        private void addConnectorbutton_Click(object sender, RoutedEventArgs e)
+        {
+            DragAndDropCanvas.addConnector();
+        }
+
+        private void RemoveSelectedbutton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }

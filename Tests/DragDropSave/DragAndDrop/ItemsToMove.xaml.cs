@@ -14,6 +14,11 @@ using System.Windows.Shapes;
 using System.Reflection;
 using System.IO;
 using System.Runtime;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
+using System.Windows.Navigation;
+
+using System.Windows.Controls.Primitives;
 
 namespace DragDropSave.DragAndDrop
 {
@@ -259,6 +264,24 @@ namespace DragDropSave.DragAndDrop
         }
 
         #endregion
+
+        #region Add Connector
+        public void addConnector()
+        {
+            numberOfElement += 1;
+            Connecteur NewElement = new Connecteur();
+            canvas.Children.Add(NewElement);
+            Canvas.SetZIndex(NewElement, numberOfElement);
+
+            Line line = new Line();
+
+            line.X1 = NewElement.Start.X;
+            line.Y1 = NewElement.Start.Y;
+            line.X2 = NewElement.End.X;
+            line.Y2 = NewElement.End.Y;
+        }
+        #endregion
+
         #region Clear
         public void clearAll() 
         {
@@ -271,5 +294,7 @@ namespace DragDropSave.DragAndDrop
             numberOfElement = 0;
         }
         #endregion
+
+
     }
 }
