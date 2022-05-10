@@ -12,10 +12,10 @@
              BorderBrush="Black" BorderThickness="3"
              IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}">
 
-    <Canvas x:Name="canvas" DragLeave="canvas_DragLeave" 
+    <!--<Canvas x:Name="canvas" DragLeave="canvas_DragLeave" 
             Drop="canvas_Drop" DragOver="canvas_DragOver" 
             Height="50" Width="75" AllowDrop="True" 
-            Background="Transparent" Margin="-3" />
+            Background="Transparent" Margin="-3" />-->
     <!--<Grid x:Name="grille">
                     
                     <Grid.ColumnDefinitions>

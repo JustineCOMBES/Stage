@@ -31,6 +31,9 @@ namespace DragDropSave.DragAndDrop
         {
             InitializeComponent();
         }
+        List<UserControlJustine> listFeatures = new List<UserControlJustine>();
+        Dictionary<int, Connecteur> ConnectorDictionary = new Dictionary<int, Connecteur>();
+
         #region Added functions
         public static readonly DependencyProperty IsChildHitTestVisibleProperty = 
             DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(ItemsToMove), new PropertyMetadata(true));
@@ -83,7 +86,8 @@ namespace DragDropSave.DragAndDrop
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                if (!canvas.Children.Contains(element)  && !(element is Ellipse && !(element is Connecteur)))
+                
+                if (!canvas.Children.Contains(element)  && !(element is Ellipse) && !(element is Connecteur))
                 {
                     canvas.Children.Add(element);
                 }
@@ -254,8 +258,6 @@ namespace DragDropSave.DragAndDrop
 
         #region Add item
 
-        List<UserControlJustine> listFeatures = new List<UserControlJustine>();
-        
         public void addItem() 
         {
             numberOfElement += 1;
@@ -286,36 +288,15 @@ namespace DragDropSave.DragAndDrop
 
         #region Add Connector
 
-          public UserControlJustine user1 = new UserControlJustine();
-          public UserControlJustine user2 = new UserControlJustine();
-
-        public void lastClicked()
-        {
-            int max = 0;
-            int ansmax = 0;
-            
-            IEnumerable<UserControlJustine> userControls = canvas.Children.OfType<UserControlJustine>();
-            foreach (UserControlJustine element in userControls)
-            {
-                int nb = Canvas.GetZIndex(element);
-                element.X= Canvas.GetLeft(element);
-                element.Y = Canvas.GetTop(element);
-                if (nb>max && !(double.IsNaN(element.X)) && !(double.IsNaN(element.Y)))
-                {
-                    ansmax = max;
-                    max = nb;
-                    this.user2 = user1;
-                    this.user1 = element;
-                }
-                
-            }
-
-        }
-
         public void addConnector()
         {
             numberOfElement += 1;
             Connecteur NewElement = new Connecteur(new Connecteur.PointD(10,10),new Connecteur.PointD(50,50));
+            if(ConnectorDictionary.Count>0)
+                ConnectorDictionary.Add(ConnectorDictionary.Keys.Max() + 1, NewElement);
+            else
+                ConnectorDictionary.Add(0, NewElement);
+
             Canvas.SetZIndex(NewElement, numberOfElement);
             canvas.Children.Add(NewElement);
         }
@@ -339,6 +320,9 @@ namespace DragDropSave.DragAndDrop
         }
         #endregion
 
+        #region Item survolé
+        
+        #endregion
 
     }
 }

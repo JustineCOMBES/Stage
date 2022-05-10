@@ -7,15 +7,20 @@
 - random.Next             --- Random est une classe pouvant donner des entiers aléatoires. random.Next() donne un entrier positif aléatoire, random.Next(int) donne un entier positif inférieur à l'éntier 
 			      et random.Next(int, int) donne un entier dans la plage spécifiée.
 - ProprtyChanged          ---
-public event PropertyChangedEventHandler PropertyChanged;                  // liste d'évènements auquel on peut ajouter/retirer un délégué
+  public event PropertyChangedEventHandler PropertyChanged;                // liste d'évènements auquel on peut ajouter/retirer un délégué
 
-protected virtual void OnPropertyChanged(string propertyName)
-{
+  protected virtual void OnPropertyChanged(string propertyName)
+  {
 	PropertyChangedEventHandler handler = PropertyChanged;             // Pour si jamais PropertyChanged est NULL et qu'un abonnement est fait pendent ce temps
 	if (handler != null)                                               // Dans le cas où il n'est pas NULL
 		handler(this, new PropertyChangedEventArgs(propertyName)); // Chaque délégué est appelé séparément. Prévient les abonnés que l'évènement est arrivé.
-}
+  }
 - Nodes.ToList().ForEach(x => x.IsHighlighted = false); // Pour chaque élément de la liste de Nodes, mettre IsHighlight à false.
--
+
 - https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview?redirectedfrom=MSDN&view=netframeworkdesktop-4.8
 - Ne pas oublier de CAST le type object -> ToDo m = (ToDo)obj; 
+
+- Associer les connecteurs aux nodes en mettant DANS les nodes les keys des connecteurs entrant et sortant. Le dictionnaire lie les keys avec les connecteurs 
+  tandisque les nodes sont contenues dans une lisete. Si une fonction de survol n'existe pas il faut la créer avec un foreach dans les noods vérifier si l'ellipse
+  n'est pas sur un nodes. si non -> return; si oui, l'ellipse doit rester avec le node (via son ID). Pour l'instant, il n'y a qu'une entrée et qu'une sortie mais 
+  à la fin, ce sera une liste.
