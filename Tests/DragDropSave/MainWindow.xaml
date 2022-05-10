@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DragDropSave"
         xmlns:DragAndDrop="clr-namespace:DragDropSave.DragAndDrop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" x:Name="main">
+        Title="MainWindow" Height="900" Width="1500" x:Name="main">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

@@ -24,9 +24,37 @@ namespace DragDropSave
         PointD pt1;
         PointD pt2;
 
-        Ellipse ellipseDebut;
-        Ellipse ellipseFin;
-        Line line;
+        private Ellipse _ellipseDebut;
+        public Ellipse ellipseDebut
+        {
+            get {return _ellipseDebut; }
+            set
+            {
+                _ellipseDebut = value;
+                OnPropertyChanged("_ellipseDebut");
+            }
+        }
+        private Ellipse _ellipseFin;
+        public Ellipse ellipseFin
+        {
+            get { return _ellipseFin; }
+            set
+            {
+                _ellipseFin = value;
+                OnPropertyChanged("_ellipseFin");
+            }
+        }
+
+        private Line _line;
+        public Line line
+        {
+            get { return _line; }
+            set
+            {
+                _line = value;
+                OnPropertyChanged("_line");
+}
+        }
 
         public Connecteur()
         {
@@ -40,7 +68,6 @@ namespace DragDropSave
         public Connecteur(PointD p1, PointD p2)
         {
             InitializeComponent();
-            //this.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
             pt1 = p1;
             pt2 = p2;
@@ -55,12 +82,14 @@ namespace DragDropSave
             line.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
             ellipseDebut = new Ellipse();
+            ellipseDebut.Name = "debut";
             ellipseDebut.Width = 20;
             ellipseDebut.Height = 20;
             ellipseDebut.Fill = new SolidColorBrush(Colors.Red);
             ellipseDebut.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
             ellipseFin = new Ellipse();
+            ellipseFin.Name = "fin";
             ellipseFin.Width = 20;
             ellipseFin.Height = 20;
             ellipseFin.Fill = new SolidColorBrush(Colors.Blue);
@@ -169,7 +198,7 @@ namespace DragDropSave
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                if (!canvas.Children.Contains(element))
+                if (!canvas.Children.Contains(element) && !(element is UserControlJustine) && !(element is Connecteur))
                 {
                     canvas.Children.Add(element);
                 }
@@ -180,7 +209,7 @@ namespace DragDropSave
 
         #endregion
 
-            #region Start and end
+        #region Start and end
         private UserControlJustine _start;
         public UserControlJustine Start
         {
@@ -204,23 +233,23 @@ namespace DragDropSave
         }
         #endregion
 
-        #region Create and delete
+        #region Point double
+        public class PointD
+        {
+            public double X;
+            public double Y;
 
+            public PointD(double x, double y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
         #endregion
 
 
     }
 
-    public class PointD
-    {
-        public double X;
-        public double Y;
-
-        public PointD(double x, double y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
+    
 }
 

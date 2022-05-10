@@ -57,6 +57,7 @@ namespace DragDropSave.DragAndDrop
         }
 
         #endregion
+
         #region Canvas functions
         private void canvas_DragLeave(object sender, DragEventArgs e)
         {
@@ -82,17 +83,31 @@ namespace DragDropSave.DragAndDrop
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                //if (!canvas.Children.Contains(element))
-                //{
-                //    canvas.Children.Add(element);
-                //}
-                Canvas.SetZIndex(element, numberOfElement + 1);
+                if (!canvas.Children.Contains(element)  && !(element is Ellipse && !(element is Connecteur)))
+                {
+                    canvas.Children.Add(element);
+                }
+                Canvas.SetZIndex(element, MaxZIndex());
+                
             }
+        }
+        private int MaxZIndex()
+        {
+            int iMax = 0;
+            foreach (UIElement element in canvas.Children)
+            {
+                int iZIndex = Canvas.GetZIndex(element);
+                if (iZIndex > iMax)
+                {
+                    iMax = iZIndex;
+                }
+            }
+            return iMax + 1;
         }
 
 
-
         #endregion
+
         #region Listes
 
         public List<double> Liste = new List<double>();
@@ -123,6 +138,7 @@ namespace DragDropSave.DragAndDrop
             }
         }
         #endregion
+
         #region Save & Load
 
         int numberOfElement = 0;
@@ -235,6 +251,7 @@ namespace DragDropSave.DragAndDrop
         }
 
         #endregion
+
         #region Add item
 
         List<UserControlJustine> listFeatures = new List<UserControlJustine>();
@@ -297,9 +314,8 @@ namespace DragDropSave.DragAndDrop
 
         public void addConnector()
         {
-            lastClicked();
             numberOfElement += 1;
-            Connecteur NewElement = new Connecteur(new PointD(10,10),new PointD(50,50));
+            Connecteur NewElement = new Connecteur(new Connecteur.PointD(10,10),new Connecteur.PointD(50,50));
             Canvas.SetZIndex(NewElement, numberOfElement);
             canvas.Children.Add(NewElement);
         }
@@ -319,10 +335,7 @@ namespace DragDropSave.DragAndDrop
 
         public void clearOne()
         {
-            //lastClicked();
-            //canvas.Children.Remove(this.user1);
-            //this.user1 = this.user2;
-            //user2 = null;
+
         }
         #endregion
 

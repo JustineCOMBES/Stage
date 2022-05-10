@@ -11,9 +11,13 @@
              Background="Salmon"
              BorderBrush="Black" BorderThickness="3"
              IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}">
-    
-      
-                <Grid x:Name="grille">
+
+    <Canvas x:Name="canvas" DragLeave="canvas_DragLeave" 
+            Drop="canvas_Drop" DragOver="canvas_DragOver" 
+            Height="50" Width="75" AllowDrop="True" 
+            Background="Transparent" Margin="-3" />
+    <!--<Grid x:Name="grille">
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -39,7 +43,7 @@
                        MouseLeave="LabelRight_MouseLeave"
                        MouseDown="LabelRight_MouseDown"/>
         
-    </Grid>
+    </Grid>-->
                 
 
     
