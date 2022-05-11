@@ -162,6 +162,11 @@ namespace DragDropSave
                     IsChildHitTestVisible = false;
                     DragDrop.DoDragDrop(this, new DataObject(DataFormats.Serializable, this), DragDropEffects.Move);
                     IsChildHitTestVisible = true;
+                    Canvas.SetLeft(ellipseDebut, line.X1 - ellipseDebut.Width / 2);
+                    Canvas.SetTop(ellipseDebut, line.Y1 - ellipseDebut.Height / 2);
+                    Canvas.SetLeft(ellipseFin, line.X2 - ellipseFin.Width / 2);
+                    Canvas.SetTop(ellipseFin, line.Y2 - ellipseFin.Height / 2);
+                    
 
                 }
 
@@ -198,7 +203,7 @@ namespace DragDropSave
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                if (!canvas.Children.Contains(element) && !(element is UserControlJustine) && !(element is Connecteur))
+                if (!canvas.Children.Contains(element) && !(element is UserControlJustine) && !(element is Connecteur) && !(element is Ellipse))
                 {
                     canvas.Children.Add(element);
                 }
