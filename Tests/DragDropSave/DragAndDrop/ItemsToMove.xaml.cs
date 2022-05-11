@@ -31,11 +31,11 @@ namespace DragDropSave.DragAndDrop
         {
             InitializeComponent();
         }
-        List<UserControlJustine> listFeatures = new List<UserControlJustine>();
+       // List<UserControlJustine> listFeatures = new List<UserControlJustine>();
         Dictionary<int, Connecteur> ConnectorDictionary = new Dictionary<int, Connecteur>();
-
+        Dictionary<int, UserControlJustine> featuresDictionary = new Dictionary<int, UserControlJustine>();
         #region Added functions
-        public static readonly DependencyProperty IsChildHitTestVisibleProperty = 
+        public static readonly DependencyProperty IsChildHitTestVisibleProperty =
             DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(ItemsToMove), new PropertyMetadata(true));
 
         public bool IsChildHitTestVisible
@@ -44,7 +44,7 @@ namespace DragDropSave.DragAndDrop
             set { SetValue(IsChildHitTestVisibleProperty, value); }
         }
 
-        public static readonly DependencyProperty ColorProperty = 
+        public static readonly DependencyProperty ColorProperty =
             DependencyProperty.Register("Color", typeof(Brush), typeof(ItemsToMove), new PropertyMetadata(Brushes.Black));
 
         public Brush Color
@@ -86,15 +86,82 @@ namespace DragDropSave.DragAndDrop
                 dropPosition = e.GetPosition(canvas);
                 Canvas.SetLeft(element, dropPosition.X);
                 Canvas.SetTop(element, dropPosition.Y);
-                
-                if (!canvas.Children.Contains(element)  && !(element is Ellipse) && !(element is Connecteur))
+
+                if (!canvas.Children.Contains(element) && !(element is Ellipse) && !(element is Connecteur))
                 {
                     canvas.Children.Add(element);
                 }
                 Canvas.SetZIndex(element, MaxZIndex());
-                
+
+                if (element is Ellipse)
+                {
+                    Ellipse elementa = (Ellipse)element;
+                    ok = itemSurvole(elementa);
+                }
+                if (ok)
+                {
+                    Ellipse elementa = (Ellipse)element;
+                    Tuple<int, string> sortie;
+                    sortie = whoIsTheConnector(elementa);
+                    Connecteur element2 = ConnectorDictionary[sortie.Item1];
+                    UserControlJustine estSurvole = featuresDictionary[estSurvolepos];
+
+                    if (element == ConnectorDictionary[sortie.Item1].ellipseDebut)
+                    {
+                        
+                        double posx = Canvas.GetLeft(estSurvole) - estSurvole.Width / 2;
+                        double posy = Canvas.GetTop(estSurvole);
+                        if (!double.IsNaN(posx))
+                        {
+                            Canvas.SetLeft(ConnectorDictionary[sortie.Item1].ellipseDebut, posx);
+                            ConnectorDictionary[sortie.Item1].line.X1 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseDebut) + ConnectorDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                        }
+                        if (!double.IsNaN(posy))
+                        {
+                            Canvas.SetTop(ConnectorDictionary[sortie.Item1].ellipseDebut, posy);
+                            ConnectorDictionary[sortie.Item1].line.Y1 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseDebut) + ConnectorDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                        }
+                    }
+                    if (element == element2.ellipseFin)
+                    {
+                        double posx = Canvas.GetLeft(estSurvole);
+                        double posy = Canvas.GetTop(estSurvole) - estSurvole.Height / 2;
+                        if (!double.IsNaN(posx))
+                        {
+                            Canvas.SetLeft(ConnectorDictionary[sortie.Item1].ellipseFin, posx);
+                            ConnectorDictionary[sortie.Item1].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                        }
+                        if (!double.IsNaN(posy))
+                        {
+                            Canvas.SetTop(ConnectorDictionary[sortie.Item1].ellipseFin, posy);
+                            ConnectorDictionary[sortie.Item1].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Height / 2;
+                        }
+                    }
+                }
+                ok = false;
             }
         }
+        bool ok = false;
+
+        public Tuple<int, string> whoIsTheConnector(Ellipse ellipse)
+        {
+            Tuple<int,string> sortie = new Tuple<int, string>(0,"Not a connector");
+            for(int i =0 ; i<ConnectorDictionary.Count; i++)
+            {
+                if(ellipse == ConnectorDictionary[i].ellipseDebut)
+                {
+                    sortie = new Tuple<int, string>(i, "debut");
+                }
+                if (ellipse == ConnectorDictionary[i].ellipseFin)
+                {
+                    sortie = new Tuple<int, string>(i, "fin");
+                }
+            }
+            return (sortie);
+        }
+
+
+
         private int MaxZIndex()
         {
             int iMax = 0;
@@ -159,7 +226,7 @@ namespace DragDropSave.DragAndDrop
             Nullable<bool> result = dlg.ShowDialog();
 
             // Process save file dialog box results
-            string fileName="";
+            string fileName = "";
             if (result == true)
             {
                 // Save document
@@ -231,26 +298,26 @@ namespace DragDropSave.DragAndDrop
             while (ligne != null)
             {
                 //Read the next line
-                
-                if (ligne != " ") 
+
+                if (ligne != " ")
                     ligne = sr.ReadLine();
-                {   double coordonnee = 0;
+                { double coordonnee = 0;
                     if (ligne != "NAN")
                     {
-                        coordonnee = Convert.ToDouble(ligne); 
+                        coordonnee = Convert.ToDouble(ligne);
                     }
 
-                     // coordonnees
+                    // coordonnees
                     this.Liste2.Add(coordonnee);
                 }
             }
 
-            for (int i=0; i<= numberOfElement; i=i+2) 
+            for (int i = 0; i <= numberOfElement; i = i + 2)
             {
-                possItem(Liste2[i],Liste2[i+1]);
+                possItem(Liste2[i], Liste2[i + 1]);
             }
 
-            
+
             sr.Close();
         }
 
@@ -258,19 +325,29 @@ namespace DragDropSave.DragAndDrop
 
         #region Add item
 
-        public void addItem() 
+        public void addItem()
         {
             numberOfElement += 1;
             UserControlJustine NewElement = new UserControlJustine();
-            listFeatures.Add(NewElement);
-            canvas.Children.Add(NewElement);            
+            //listFeatures.Add(NewElement);
+
+            if (featuresDictionary.Count > 0)
+                featuresDictionary.Add(featuresDictionary.Keys.Max() + 1, NewElement);
+            else
+                featuresDictionary.Add(0, NewElement);
+
+            canvas.Children.Add(NewElement);
             Canvas.SetZIndex(NewElement, numberOfElement);
         }
 
         public void possItem(double possx, double possy)
         {
             UserControlJustine NewElement = new UserControlJustine();
-            listFeatures.Add(NewElement);
+            //listFeatures.Add(NewElement);
+            if (featuresDictionary.Count > 0)
+                featuresDictionary.Add(featuresDictionary.Keys.Max() + 1, NewElement);
+            else
+                featuresDictionary.Add(0, NewElement);
             canvas.Children.Add(NewElement);
             Canvas.SetLeft(NewElement, possy);
             Canvas.SetTop(NewElement, possx);
@@ -291,8 +368,8 @@ namespace DragDropSave.DragAndDrop
         public void addConnector()
         {
             numberOfElement += 1;
-            Connecteur NewElement = new Connecteur(new Connecteur.PointD(10,10),new Connecteur.PointD(50,50));
-            if(ConnectorDictionary.Count>0)
+            Connecteur NewElement = new Connecteur(new Connecteur.PointD(10, 10), new Connecteur.PointD(50, 50));
+            if (ConnectorDictionary.Count > 0)
                 ConnectorDictionary.Add(ConnectorDictionary.Keys.Max() + 1, NewElement);
             else
                 ConnectorDictionary.Add(0, NewElement);
@@ -303,7 +380,7 @@ namespace DragDropSave.DragAndDrop
         #endregion
 
         #region Clear
-        public void clearAll() 
+        public void clearAll()
         {
             int cpt = canvas.Children.Count;
             for (int i = cpt - 1; i >= 0; i += -1)
@@ -320,8 +397,74 @@ namespace DragDropSave.DragAndDrop
         }
         #endregion
 
+
         #region Item survolé
-        
+
+        private int _estSurvolepos;
+        public int estSurvolepos
+        {
+        get { return _estSurvolepos; }
+        set 
+        {
+                _estSurvolepos = value;
+        }
+        }
+
+        public bool itemSurvole(Ellipse link)//, string str)
+         {
+            Point hg;
+            Point hd;
+            Point bg;
+            Point bd;
+            //if (str == "debut")
+            //{
+            //    hg = new Point(Canvas.GetLeft(link.ellipseDebut), Canvas.GetTop(link.ellipseDebut));
+            //    hd = new Point(hg.X + link.ellipseDebut.Width, hg.Y);
+            //    bg = new Point(hg.X, hg.Y + link.ellipseDebut.Height);
+            //    bd = new Point(hg.X + link.ellipseDebut.Width, hg.Y + link.ellipseDebut.Height);
+            //}
+            //else
+           // {
+                //if (str == "fin")
+               // {
+                    hg = new Point(Canvas.GetLeft(link), Canvas.GetTop(link));
+                    hd = new Point(hg.X + link.Width, hg.Y);
+                    bg = new Point(hg.X, hg.Y + link.Height);
+                    bd = new Point(hg.X + link.Width, hg.Y + link.Height);
+            // }
+            //    else
+            //    {
+            //        hg = new Point(0, 0);
+            //        hd = new Point(0, 0);
+            //        bg = new Point(0, 0);
+            //        bd = new Point(0, 0);
+            //    }
+            //}
+            for(int i = 0; i < featuresDictionary.Count; i++)
+             {
+                UserControlJustine features = featuresDictionary[i];
+                Point hgf = new Point(Canvas.GetLeft(features), Canvas.GetTop(features));
+                Point hdf = new Point(hgf.X + features.Width, hgf.Y);
+                Point bgf = new Point(hgf.X, hgf.Y + features.Height);
+                Point bdf = new Point(hgf.X + features.Width, hgf.Y + features.Height);
+
+                bool left = hgf.X < hg.X;
+                bool up = hgf.Y < hg.Y;
+                bool right = hdf.X > hd.X;
+                bool down = bgf.Y > bg.Y;
+
+                if(left && up && right && down)
+                {
+                    return (true);
+                    estSurvolepos = i;
+                }
+                else
+                {
+                    estSurvolepos = 0;
+                }
+            }
+            return (false);
+         }
         #endregion
 
     }
