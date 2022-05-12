@@ -98,44 +98,7 @@ namespace DragDropSave.DragAndDrop
                     Ellipse elementa = (Ellipse)element;
                     ok = itemSurvole(elementa);
                 }
-                if(element is Ellipse && featuresDictionary.Count>0) // vider les connecteurs des listes s'il ne sont plus sur le node
-                {
-                    for (int j = 0; j < featuresDictionary.Count; j++)
-                    { 
-                    isOnThis(featuresDictionary[j]);
-                    bool exist;
-                    for(int i = 0; i < featuresDictionary[j].InputNodeId.Count; i++)
-                    {
-                        exist = false;
-                        foreach(int vin in areOnThis)
-                        {
-                            if(vin == featuresDictionary[j].InputNodeId[i])
-                            {
-                                exist = true;
-                            }
-                        }
-                        if(!exist)
-                        {
-                            featuresDictionary[j].InputNodeId.Remove(featuresDictionary[j].InputNodeId[i]);
-                        }
-                    }
-                    for (int i = 0; i < featuresDictionary[j].OutputNodeId.Count; i++)
-                    {
-                        exist = false;
-                        foreach (int vin in areOnThis)
-                        {
-                            if (vin == featuresDictionary[j].OutputNodeId[i])
-                            {
-                                exist = true;
-                            }
-                        }
-                        if (!exist)
-                        {
-                            featuresDictionary[j].OutputNodeId.Remove(featuresDictionary[j].OutputNodeId[i]);
-                        }
-                    }
-                    }
-                }
+                
                 if (ok)
                 {
                     
@@ -146,7 +109,7 @@ namespace DragDropSave.DragAndDrop
                     Connecteur element2 = ConnectorDictionary[sortie.Item1];
                     UserControlJustine estSurvole = featuresDictionary[estSurvolepos];
 
-                    if (element == ConnectorDictionary[sortie.Item1].ellipseDebut)
+                    if (element == element2.ellipseDebut)
                     {
                         featuresDictionary[estSurvolepos].OutputNodeId.Add(sortie.Item1);
 
@@ -171,7 +134,7 @@ namespace DragDropSave.DragAndDrop
                         if (!double.IsNaN(posx))
                         {
                             Canvas.SetLeft(ConnectorDictionary[sortie.Item1].ellipseFin, posx);
-                            ConnectorDictionary[sortie.Item1].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                            ConnectorDictionary[sortie.Item1].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Width / 2;
                         }
                         if (!double.IsNaN(posy))
                         {
@@ -200,7 +163,7 @@ namespace DragDropSave.DragAndDrop
                             if (!double.IsNaN(posx))
                             {
                                 Canvas.SetLeft(ConnectorDictionary[i].ellipseFin, posx);
-                                ConnectorDictionary[i].line.X2 = Canvas.GetLeft(ConnectorDictionary[i].ellipseFin) + ConnectorDictionary[i].ellipseDebut.Width / 2;
+                                ConnectorDictionary[i].line.X2 = Canvas.GetLeft(ConnectorDictionary[i].ellipseFin) + ConnectorDictionary[i].ellipseFin.Width / 2;
                             }
                             if (!double.IsNaN(posy))
                             {
@@ -231,7 +194,46 @@ namespace DragDropSave.DragAndDrop
 
                         }
                     }
-                    isOnThis(elementa);
+                    if (element is UserControlJustine && featuresDictionary.Count > 0) // vider les connecteurs des listes s'il ne sont plus sur le node
+                    {
+                        for (int j = 0; j < featuresDictionary.Count; j++)
+                        {
+                            isOnThis(featuresDictionary[j]);
+                            bool exist;
+                            bool exist2;
+                            for (int i = 0; i < featuresDictionary[j].InputNodeId.Count; i++)
+                            {
+                                exist = false;
+                                foreach (int vin in areOnThisIn)
+                                {
+                                    if (vin == featuresDictionary[j].InputNodeId[i])
+                                    {
+                                        exist = true;
+                                    }
+                                }
+                                if (!exist)
+                                {
+                                    featuresDictionary[j].InputNodeId.Remove(featuresDictionary[j].InputNodeId[i]);
+                                }
+                            }
+                            for (int i = 0; i < featuresDictionary[j].OutputNodeId.Count; i++)
+                            {
+                                exist2 = false;
+                                foreach (int vin in areOnThisOut)
+                                {
+                                    if (vin == featuresDictionary[j].OutputNodeId[i])
+                                    {
+                                        exist2 = true;
+                                    }
+                                }
+                                if (!exist2)
+                                {
+                                    featuresDictionary[j].OutputNodeId.Remove(featuresDictionary[j].OutputNodeId[i]);
+                                }
+                            }
+                        }
+                    }
+                    //isOnThis(elementa);
                 }
                 ok = false;
             }
@@ -539,17 +541,24 @@ namespace DragDropSave.DragAndDrop
             return (false);
          }
 
-        List<int> areOnThis = new List<int>();
+        List<int> areOnThisIn = new List<int>();
+        List<int> areOnThisOut = new List<int>();
         public void isOnThis(UserControlJustine feature)
         {
-            areOnThis.Clear();
-            Point hg = new Point(Canvas.GetLeft(feature), Canvas.GetTop(feature));
-            Point hd = new Point(hg.X + feature.Width, hg.Y);
-            Point bg = new Point(hg.X, hg.Y + feature.Height);
-            Point bd = new Point(hg.X + feature.Width, hg.Y + feature.Height);
+            areOnThisIn.Clear();
+            areOnThisOut.Clear();
 
             for (int i = 0; i < ConnectorDictionary.Count; i++)
             {
+                double w = ConnectorDictionary[i].ellipseDebut.Width + ConnectorDictionary[i].ellipseDebut.Width /2;
+                double h = ConnectorDictionary[i].ellipseDebut.Height + ConnectorDictionary[i].ellipseDebut.Height /2;
+
+                Point hg = new Point(Canvas.GetLeft(feature) - w/2, Canvas.GetTop(feature) - h/2);
+                Point hd = new Point(hg.X + feature.Width + w , hg.Y - h/2);
+                Point bg = new Point(hg.X - w/2, hg.Y + feature.Height + h/2);
+                Point bd = new Point(hg.X + feature.Width + w, hg.Y + feature.Height + h);
+
+                
 
                 Point hgf = new Point(Canvas.GetLeft(ConnectorDictionary[i].ellipseDebut), Canvas.GetTop(ConnectorDictionary[i].ellipseDebut));
                 Point hdf = new Point(hgf.X + ConnectorDictionary[i].ellipseDebut.Width, hgf.Y);
@@ -563,22 +572,30 @@ namespace DragDropSave.DragAndDrop
 
                 if (left && up && right && down)
                 {
-                    areOnThis.Add(i);
+                    areOnThisOut.Add(i);
                 }
+
+                double w2 = ConnectorDictionary[i].ellipseFin.Width + ConnectorDictionary[i].ellipseFin.Width / 2;
+                double h2 = ConnectorDictionary[i].ellipseFin.Height + ConnectorDictionary[i].ellipseFin.Height / 2;
+
+                Point hg2 = new Point(Canvas.GetLeft(feature) - w2 / 2, Canvas.GetTop(feature) - h2 / 2);
+                Point hd2 = new Point(hg2.X + feature.Width + w / 2, hg2.Y - h2 / 2);
+                Point bg2 = new Point(hg2.X - w2 / 2, hg2.Y + feature.Height + h2 / 2);
+                Point bd2 = new Point(hg2.X + feature.Width + w2, hg2.Y + feature.Height + h2);
 
                 Point hgf2 = new Point(Canvas.GetLeft(ConnectorDictionary[i].ellipseFin), Canvas.GetTop(ConnectorDictionary[i].ellipseFin));
                 Point hdf2 = new Point(hgf2.X + ConnectorDictionary[i].ellipseFin.Width, hgf2.Y);
                 Point bgf2 = new Point(hgf2.X, hgf2.Y + ConnectorDictionary[i].ellipseFin.Height);
                 Point bdf2 = new Point(hgf2.X + ConnectorDictionary[i].ellipseFin.Width, hgf2.Y + ConnectorDictionary[i].ellipseFin.Height);
 
-                bool left2 = hgf2.X > hg.X;
-                bool up2 = hgf2.Y > hg.Y; 
-                bool right2 = hdf2.X < hd.X;
-                bool down2 = bgf2.Y < bg.Y;
+                bool left2 = hgf2.X > hg2.X;
+                bool up2 = hgf2.Y > hg2.Y; 
+                bool right2 = hdf2.X < hd2.X;
+                bool down2 = bgf2.Y < bg2.Y;
 
                 if (left2 && up2 && right2 && down2)
                 {
-                    areOnThis.Add(i);
+                    areOnThisIn.Add(i);
                 }
             }
         }

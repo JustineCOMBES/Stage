@@ -95,9 +95,10 @@ namespace DragDropSave
             ellipseFin.Fill = new SolidColorBrush(Colors.Blue);
             ellipseFin.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
+            canvas.Children.Add(line);
             canvas.Children.Add(ellipseDebut);
             canvas.Children.Add(ellipseFin);
-            canvas.Children.Add(line);
+            
             Canvas.SetLeft(ellipseDebut, pt1.X - ellipseDebut.Width / 2);
             Canvas.SetTop(ellipseDebut, pt1.Y - ellipseDebut.Height / 2);
             Canvas.SetLeft(ellipseFin, pt2.X - ellipseFin.Width / 2);
@@ -143,18 +144,20 @@ namespace DragDropSave
                 {
                     IsChildHitTestVisible = false;
                     DragDrop.DoDragDrop(ellipseDebut, new DataObject(DataFormats.Serializable, ellipseDebut), DragDropEffects.Move);
-                    IsChildHitTestVisible = true;
+                    
                     line.X1 = Canvas.GetLeft(ellipseDebut) + ellipseDebut.Width / 2;
                     line.Y1 = Canvas.GetTop(ellipseDebut) + ellipseDebut.Height / 2;
+                    IsChildHitTestVisible = true;
                 }
 
                 if (sender == ellipseFin)
                 {
                     IsChildHitTestVisible = false;
                     DragDrop.DoDragDrop(ellipseFin, new DataObject(DataFormats.Serializable, ellipseFin), DragDropEffects.Move);
-                    IsChildHitTestVisible = true;
+                    
                     line.X2 = Canvas.GetLeft(ellipseFin) + ellipseDebut.Width / 2;
                     line.Y2 = Canvas.GetTop(ellipseFin) + ellipseFin.Height / 2;
+                    IsChildHitTestVisible = true;
                 }
 
                 if (sender == line)
