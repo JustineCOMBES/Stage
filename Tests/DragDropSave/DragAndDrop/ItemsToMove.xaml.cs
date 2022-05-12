@@ -31,7 +31,6 @@ namespace DragDropSave.DragAndDrop
         {
             InitializeComponent();
         }
-       // List<UserControlJustine> listFeatures = new List<UserControlJustine>();
         Dictionary<int, Connecteur> ConnectorDictionary = new Dictionary<int, Connecteur>();
         Dictionary<int, UserControlJustine> featuresDictionary = new Dictionary<int, UserControlJustine>();
         #region Added functions
@@ -84,18 +83,79 @@ namespace DragDropSave.DragAndDrop
             if (data is UIElement element)
             {
                 dropPosition = e.GetPosition(canvas);
-                Canvas.SetLeft(element, dropPosition.X);
-                Canvas.SetTop(element, dropPosition.Y);
+                
+                if (element is Line)
+                {
+                    Line elementa = (Line)element;
+                    int sortie = whoIsTheConnectorLine(elementa);
+                    double h;
+                    double w;
 
-                if (!canvas.Children.Contains(element) && !(element is Ellipse) && !(element is Connecteur))
+                    bool test1 = ConnectorDictionary[sortie].line.Y2 > ConnectorDictionary[sortie].line.Y2;
+                    
+                    if (test1)
+                    {
+                        h = ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].line.Y1;
+                        ConnectorDictionary[sortie].line.Y1 = dropPosition.Y - h / 2;
+                        ConnectorDictionary[sortie].line.Y2 = dropPosition.Y + h / 2;
+                    }
+                    else
+                    {
+                        h = -ConnectorDictionary[sortie].line.Y2 + ConnectorDictionary[sortie].line.Y1;
+                        ConnectorDictionary[sortie].line.Y1 = dropPosition.Y + h / 2;
+                        ConnectorDictionary[sortie].line.Y2 = dropPosition.Y - h / 2;
+                    }
+
+                    bool test2 = ConnectorDictionary[sortie].line.X2 > ConnectorDictionary[sortie].line.X1;
+                    if(test2)
+                    {
+                        w = ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].line.X1;
+                        ConnectorDictionary[sortie].line.X1 = dropPosition.X - w / 2;
+                        ConnectorDictionary[sortie].line.X2 = dropPosition.X + w / 2;
+                    }
+                    else
+                    {
+                        w = -ConnectorDictionary[sortie].line.X2 + ConnectorDictionary[sortie].line.X1;
+                        ConnectorDictionary[sortie].line.X1 = dropPosition.X + w / 2;
+                        ConnectorDictionary[sortie].line.X2 = dropPosition.X - w / 2;
+                    }
+                    
+                        Canvas.SetLeft(ConnectorDictionary[sortie].ellipseDebut, ConnectorDictionary[sortie].line.X1 - ConnectorDictionary[sortie].ellipseDebut.Width / 2);
+                        Canvas.SetTop(ConnectorDictionary[sortie].ellipseDebut, ConnectorDictionary[sortie].line.Y1 - ConnectorDictionary[sortie].ellipseDebut.Height / 2);
+                        Canvas.SetLeft(ConnectorDictionary[sortie].ellipseFin, ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].ellipseFin.Width / 2);
+                        Canvas.SetTop(ConnectorDictionary[sortie].ellipseFin, ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].ellipseFin.Height / 2);
+                }
+
+                if(!(element is Line))
+                {
+                    Canvas.SetLeft(element, dropPosition.X);
+                    Canvas.SetTop(element, dropPosition.Y);
+                }
+
+                if (!canvas.Children.Contains(element))
                 {
                     canvas.Children.Add(element);
+                    if(element is Connecteur)
+                    {
+                       Connecteur element1 = (Connecteur)element;
+                        
+                        canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].line);
+                        canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseDebut);
+                        canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseFin);
+                    }
                 }
                 Canvas.SetZIndex(element, MaxZIndex());
 
                 if (element is Ellipse)
                 {
+
                     Ellipse elementa = (Ellipse)element;
+                    Tuple<int, string> sortie;
+                    sortie = whoIsTheConnector(elementa);
+                    ConnectorDictionary[sortie.Item1].line.X1 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseDebut) + ConnectorDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                    ConnectorDictionary[sortie.Item1].line.Y1 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseDebut) + ConnectorDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                    ConnectorDictionary[sortie.Item1].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Width / 2;
+                    ConnectorDictionary[sortie.Item1].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Height / 2;
                     ok = itemSurvole(elementa);
                 }
                 
@@ -144,8 +204,8 @@ namespace DragDropSave.DragAndDrop
                     }
                     
                 }
-
-                if(element is UserControlJustine)
+                
+                if (element is UserControlJustine)
                 {
                     UserControlJustine elementa = (UserControlJustine)element;
                     int nbin = elementa.InputNodeId.Count;
@@ -233,9 +293,10 @@ namespace DragDropSave.DragAndDrop
                             }
                         }
                     }
-                    //isOnThis(elementa);
+                    
                 }
                 ok = false;
+                
             }
         }
         bool ok = false;
@@ -257,6 +318,18 @@ namespace DragDropSave.DragAndDrop
             return (sortie);
         }
 
+        public int whoIsTheConnectorLine(Line line)
+        {
+            int sortie = new int();
+            for (int i = 0; i < ConnectorDictionary.Count; i++)
+            {
+                if (line == ConnectorDictionary[i].line)
+                {
+                    sortie = i ;
+                }
+            }
+            return (sortie);
+        }
 
 
         private int MaxZIndex()
@@ -305,15 +378,30 @@ namespace DragDropSave.DragAndDrop
                 this.Liste2.Remove(pos);
             }
         }
+
+        List<double> dbliste = new List<double>();
+        public void addDBl(double pos)
+        {
+            this.dbliste.Add(pos);
+        }
+        public void clearDBl()
+        {
+            for (int i = 0; i < dbliste.Count; i++)
+            {
+                var pos = dbliste[i];
+                this.dbliste.Remove(pos);
+            }
+        }
         #endregion
 
         #region Save & Load
 
         int numberOfElement = 0;
-
+        
         public void save()
         { //https://docs.microsoft.com/fr-fr/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
             clearDB();
+            clearDBl();
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
             dlg.FileName = "Document"; // Default file name
             dlg.DefaultExt = ".xaml"; // Default file extension
@@ -330,32 +418,55 @@ namespace DragDropSave.DragAndDrop
                 fileName = dlg.FileName;
             }
             else { return; }
-            // string fileName = @"C:\Github\Stage\Tests\DragDropSave\DragAndDrop\myFile.txt";
+
             FileStream stream = null;
-            stream = new FileStream(fileName, FileMode.OpenOrCreate);
-            //// double RectangleLeft = Canvas.GetLeft(LabelRectangle);
-            // //double RectangleTop = Canvas.GetTop(LabelRectangle);
+            try
+            {
+                stream = new FileStream(fileName, FileMode.Truncate);
+            }
+            catch(Exception)
+            {
+             stream = new FileStream(fileName, FileMode.OpenOrCreate);
+            }
+            
 
 
             IEnumerable<UIElement> uIElements = canvas.Children.OfType<UIElement>();
-            foreach (UIElement element in uIElements)
+            foreach (UserControlJustine element in featuresDictionary.Values)
             {
                 double posTop = Canvas.GetTop(element);
                 double posLeft = Canvas.GetLeft(element);
                 addDB(posTop);
                 addDB(posLeft);
             }
-
+            foreach (Connecteur element in ConnectorDictionary.Values)
+            {
+                double posx1 = element.line.X1;
+                double posy1 = element.line.Y1;
+                double posx2 = element.line.X2;
+                double posy2 = element.line.Y2;
+                addDBl(posx1);
+                addDBl(posy1);
+                addDBl(posx2);
+                addDBl(posy2);
+            }
             using (StreamWriter sw = new StreamWriter(stream, Encoding.UTF8))
             {
                 sw.WriteLine("Number of elements");
                 sw.WriteLine(numberOfElement);
-                sw.WriteLine("Points");
+                sw.WriteLine("Number of features");
+                sw.WriteLine(featuresDictionary.Count);
+                sw.WriteLine("Number of connector");
+                sw.WriteLine(ConnectorDictionary.Count);
+                sw.WriteLine("Points des features");
                 foreach (double s in Liste)
                 {
                     sw.WriteLine(s);
-                    //sw.WriteLine(RectangleTop);
-                    // sw.WriteLine(" ");
+                }
+                sw.WriteLine("Points des connections");
+                foreach (double s in dbliste)
+                {
+                    sw.WriteLine(s);
                 }
                 sw.Close();
             }
@@ -471,8 +582,12 @@ namespace DragDropSave.DragAndDrop
             else
                 ConnectorDictionary.Add(0, NewElement);
 
-            Canvas.SetZIndex(NewElement, numberOfElement);
+            canvas.Children.Add(NewElement.line);
+            canvas.Children.Add(NewElement.ellipseDebut);
+            canvas.Children.Add(NewElement.ellipseFin);
+            
             canvas.Children.Add(NewElement);
+            Canvas.SetZIndex(NewElement, numberOfElement);
         }
         #endregion
 
@@ -494,8 +609,7 @@ namespace DragDropSave.DragAndDrop
         }
         #endregion
 
-
-        #region Item survolé
+        #region Item survolé et IsOnThis
 
         private int _estSurvolepos;
         public int estSurvolepos
