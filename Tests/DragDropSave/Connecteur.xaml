@@ -9,7 +9,4 @@
              x:Name="root"
              Background="Transparent"
              IsHitTestVisible="{Binding IsChildHitTestVisible,ElementName=root}">
-
-    <!--<Canvas x:Name="canvas" DragLeave="canvas_DragLeave" Drop="canvas_Drop" DragOver="canvas_DragOver" AllowDrop="True" Background="Transparent"/>-->
-
 </UserControl>

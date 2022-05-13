@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
+
 
 namespace DragDropSave
 {
@@ -23,8 +25,6 @@ namespace DragDropSave
         public MainWindow()
         {
             InitializeComponent();
-            
-
         }
 
         private void savebutton_Click(object sender, RoutedEventArgs e)
@@ -56,6 +56,5 @@ namespace DragDropSave
         {
             DragAndDropCanvas.clearOne();
         }
-
     }
 }

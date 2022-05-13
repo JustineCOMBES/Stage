@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 
 using System.Windows.Controls.Primitives;
 
+
 namespace DragDropSave.DragAndDrop
 {
     /// <summary>
@@ -33,6 +34,7 @@ namespace DragDropSave.DragAndDrop
         }
         Dictionary<int, Connecteur> ConnectorDictionary = new Dictionary<int, Connecteur>();
         Dictionary<int, UserControlJustine> featuresDictionary = new Dictionary<int, UserControlJustine>();
+
         #region Added functions
         public static readonly DependencyProperty IsChildHitTestVisibleProperty =
             DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(ItemsToMove), new PropertyMetadata(true));
@@ -67,7 +69,19 @@ namespace DragDropSave.DragAndDrop
 
             if (data is UIElement element)
             {
-                canvas.Children.Remove(element);
+                if (element is Connecteur)
+                {
+                    Connecteur element1 = (Connecteur)element;
+
+                    canvas.Children.Remove(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].line);
+                    canvas.Children.Remove(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseDebut);
+                    canvas.Children.Remove(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseFin);
+                }
+                else
+                {
+                    if(!(element is Line))
+                        canvas.Children.Remove(element);
+                }
             }
         }
 
@@ -82,51 +96,63 @@ namespace DragDropSave.DragAndDrop
 
             if (data is UIElement element)
             {
+                
                 dropPosition = e.GetPosition(canvas);
+
+                int thisOne = new int();
                 
                 if (element is Line)
                 {
                     Line elementa = (Line)element;
                     int sortie = whoIsTheConnectorLine(elementa);
-                    double h;
-                    double w;
+                    thisOne = sortie;
+                    double h = new double();
+                    double w = new double();
 
-                    bool test1 = ConnectorDictionary[sortie].line.Y2 > ConnectorDictionary[sortie].line.Y2;
-                    
-                    if (test1)
-                    {
-                        h = ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].line.Y1;
-                        ConnectorDictionary[sortie].line.Y1 = dropPosition.Y - h / 2;
-                        ConnectorDictionary[sortie].line.Y2 = dropPosition.Y + h / 2;
-                    }
-                    else
-                    {
-                        h = -ConnectorDictionary[sortie].line.Y2 + ConnectorDictionary[sortie].line.Y1;
-                        ConnectorDictionary[sortie].line.Y1 = dropPosition.Y + h / 2;
-                        ConnectorDictionary[sortie].line.Y2 = dropPosition.Y - h / 2;
-                    }
+                    h = Math.Abs(ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].line.Y1);
+                    Canvas.SetTop(ConnectorDictionary[sortie].ellipseDebut, dropPosition.Y - h / 2 - ConnectorDictionary[sortie].ellipseDebut.Height / 2);
+                    Canvas.SetTop(ConnectorDictionary[sortie].ellipseFin, dropPosition.Y + h / 2 - ConnectorDictionary[sortie].ellipseFin.Height / 2);
 
-                    bool test2 = ConnectorDictionary[sortie].line.X2 > ConnectorDictionary[sortie].line.X1;
-                    if(test2)
-                    {
-                        w = ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].line.X1;
-                        ConnectorDictionary[sortie].line.X1 = dropPosition.X - w / 2;
-                        ConnectorDictionary[sortie].line.X2 = dropPosition.X + w / 2;
-                    }
-                    else
-                    {
-                        w = -ConnectorDictionary[sortie].line.X2 + ConnectorDictionary[sortie].line.X1;
-                        ConnectorDictionary[sortie].line.X1 = dropPosition.X + w / 2;
-                        ConnectorDictionary[sortie].line.X2 = dropPosition.X - w / 2;
-                    }
-                    
-                        Canvas.SetLeft(ConnectorDictionary[sortie].ellipseDebut, ConnectorDictionary[sortie].line.X1 - ConnectorDictionary[sortie].ellipseDebut.Width / 2);
-                        Canvas.SetTop(ConnectorDictionary[sortie].ellipseDebut, ConnectorDictionary[sortie].line.Y1 - ConnectorDictionary[sortie].ellipseDebut.Height / 2);
-                        Canvas.SetLeft(ConnectorDictionary[sortie].ellipseFin, ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].ellipseFin.Width / 2);
-                        Canvas.SetTop(ConnectorDictionary[sortie].ellipseFin, ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].ellipseFin.Height / 2);
+                    w = Math.Abs(ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].line.X1);
+                    Canvas.SetLeft(ConnectorDictionary[sortie].ellipseDebut, dropPosition.X - w / 2 - ConnectorDictionary[sortie].ellipseDebut.Width / 2);
+                    Canvas.SetLeft(ConnectorDictionary[sortie].ellipseFin, dropPosition.X + w / 2 - ConnectorDictionary[sortie].ellipseFin.Width / 2);
+
+                    go = true;
+
+                    //ConnectorDictionary[sortie].line.X1 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Width / 2;
+                    //ConnectorDictionary[sortie].line.Y1 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Height / 2;
+                    //ConnectorDictionary[sortie].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Width / 2;
+                    //ConnectorDictionary[sortie].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Height / 2;
                 }
+                if (element is Connecteur)
+                {
+                    Connecteur elementa = (Connecteur)element;
+                    int sortie = new int();
+                    for (int i = 0; i < ConnectorDictionary.Count; i++)
+                    {
+                        if (elementa == ConnectorDictionary[i])
+                        {
+                            sortie = i;
+                        }
+                    }
 
-                if(!(element is Line))
+                    double h = new double();
+                    double w = new double();
+
+                    h = Math.Abs(ConnectorDictionary[sortie].line.Y2 - ConnectorDictionary[sortie].line.Y1);
+                    Canvas.SetTop(ConnectorDictionary[sortie].ellipseDebut, dropPosition.Y - h / 2 - ConnectorDictionary[sortie].ellipseDebut.Height / 2);
+                    Canvas.SetTop(ConnectorDictionary[sortie].ellipseFin, dropPosition.Y + h / 2 - ConnectorDictionary[sortie].ellipseFin.Height / 2);
+
+                    w = Math.Abs(ConnectorDictionary[sortie].line.X2 - ConnectorDictionary[sortie].line.X1);
+                    Canvas.SetLeft(ConnectorDictionary[sortie].ellipseDebut, dropPosition.X - w / 2 - ConnectorDictionary[sortie].ellipseDebut.Width / 2);
+                    Canvas.SetLeft(ConnectorDictionary[sortie].ellipseFin, dropPosition.X + w / 2 - ConnectorDictionary[sortie].ellipseFin.Width / 2);
+
+                    ConnectorDictionary[sortie].line.X1 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Width / 2;
+                    ConnectorDictionary[sortie].line.Y1 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Height / 2;
+                    ConnectorDictionary[sortie].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Width / 2;
+                    ConnectorDictionary[sortie].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Height / 2;
+                }
+                if (!(element is Line) && !(element is Connecteur))
                 {
                     Canvas.SetLeft(element, dropPosition.X);
                     Canvas.SetTop(element, dropPosition.Y);
@@ -134,17 +160,31 @@ namespace DragDropSave.DragAndDrop
 
                 if (!canvas.Children.Contains(element))
                 {
-                    canvas.Children.Add(element);
-                    if(element is Connecteur)
+
+                    if (element is Connecteur)
                     {
-                       Connecteur element1 = (Connecteur)element;
-                        
+                        Connecteur element1 = (Connecteur)element;
+
                         canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].line);
                         canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseDebut);
                         canvas.Children.Add(ConnectorDictionary[whoIsTheConnectorLine(element1.line)].ellipseFin);
                     }
+                    else
+                    {
+                        canvas.Children.Add(element);
+                    }
                 }
+                
                 Canvas.SetZIndex(element, MaxZIndex());
+                if (go)
+                {
+                    int sortie = thisOne;
+                    ConnectorDictionary[sortie].line.X1 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Width / 2;
+                    ConnectorDictionary[sortie].line.Y1 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseDebut) + ConnectorDictionary[sortie].ellipseDebut.Height / 2;
+                    ConnectorDictionary[sortie].line.X2 = Canvas.GetLeft(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Width / 2;
+                    ConnectorDictionary[sortie].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie].ellipseFin) + ConnectorDictionary[sortie].ellipseFin.Height / 2;
+
+                }
 
                 if (element is Ellipse)
                 {
@@ -158,10 +198,10 @@ namespace DragDropSave.DragAndDrop
                     ConnectorDictionary[sortie.Item1].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Height / 2;
                     ok = itemSurvole(elementa);
                 }
-                
+
                 if (ok)
                 {
-                    
+
 
                     Ellipse elementa = (Ellipse)element;
                     Tuple<int, string> sortie;
@@ -173,8 +213,8 @@ namespace DragDropSave.DragAndDrop
                     {
                         featuresDictionary[estSurvolepos].OutputNodeId.Add(sortie.Item1);
 
-                        double posx = Canvas.GetLeft(estSurvole) + estSurvole.Width - ConnectorDictionary[sortie.Item1].ellipseDebut.Width/2;
-                        double posy = Canvas.GetTop(estSurvole)+ estSurvole.Height / 2 - ConnectorDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                        double posx = Canvas.GetLeft(estSurvole) + estSurvole.Width - ConnectorDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                        double posy = Canvas.GetTop(estSurvole) + estSurvole.Height / 2 - ConnectorDictionary[sortie.Item1].ellipseDebut.Height / 2;
                         if (!double.IsNaN(posx))
                         {
                             Canvas.SetLeft(ConnectorDictionary[sortie.Item1].ellipseDebut, posx);
@@ -202,18 +242,18 @@ namespace DragDropSave.DragAndDrop
                             ConnectorDictionary[sortie.Item1].line.Y2 = Canvas.GetTop(ConnectorDictionary[sortie.Item1].ellipseFin) + ConnectorDictionary[sortie.Item1].ellipseFin.Height / 2;
                         }
                     }
-                    
+
                 }
-                
+
                 if (element is UserControlJustine)
                 {
                     UserControlJustine elementa = (UserControlJustine)element;
                     int nbin = elementa.InputNodeId.Count;
                     int nbout = elementa.OutputNodeId.Count;
-                    
-                    if(nbin > 0)
+
+                    if (nbin > 0)
                     {
-                        foreach(int i in elementa.InputNodeId)
+                        foreach (int i in elementa.InputNodeId)
                         {
                             Connecteur element2 = ConnectorDictionary[i];
 
@@ -233,7 +273,7 @@ namespace DragDropSave.DragAndDrop
                         }
                     }
 
-                    if(nbout > 0)
+                    if (nbout > 0)
                     {
                         foreach (int i in elementa.OutputNodeId)
                         {
@@ -293,20 +333,21 @@ namespace DragDropSave.DragAndDrop
                             }
                         }
                     }
-                    
+
                 }
                 ok = false;
-                
+                go = false;
             }
         }
         bool ok = false;
+        bool go = false;
 
         public Tuple<int, string> whoIsTheConnector(Ellipse ellipse)
         {
-            Tuple<int,string> sortie = new Tuple<int, string>(0,"Not a connector");
-            for(int i =0 ; i<ConnectorDictionary.Count; i++)
+            Tuple<int, string> sortie = new Tuple<int, string>(0, "Not a connector");
+            for (int i = 0; i < ConnectorDictionary.Count; i++)
             {
-                if(ellipse == ConnectorDictionary[i].ellipseDebut)
+                if (ellipse == ConnectorDictionary[i].ellipseDebut)
                 {
                     sortie = new Tuple<int, string>(i, "debut");
                 }
@@ -325,7 +366,7 @@ namespace DragDropSave.DragAndDrop
             {
                 if (line == ConnectorDictionary[i].line)
                 {
-                    sortie = i ;
+                    sortie = i;
                 }
             }
             return (sortie);
@@ -397,7 +438,7 @@ namespace DragDropSave.DragAndDrop
         #region Save & Load
 
         int numberOfElement = 0;
-        
+
         public void save()
         { //https://docs.microsoft.com/fr-fr/troubleshoot/developer/visualstudio/csharp/language-compilers/store-custom-information-config-file
             clearDB();
@@ -424,11 +465,11 @@ namespace DragDropSave.DragAndDrop
             {
                 stream = new FileStream(fileName, FileMode.Truncate);
             }
-            catch(Exception)
+            catch (Exception)
             {
-             stream = new FileStream(fileName, FileMode.OpenOrCreate);
+                stream = new FileStream(fileName, FileMode.OpenOrCreate);
             }
-            
+
 
 
             IEnumerable<UIElement> uIElements = canvas.Children.OfType<UIElement>();
@@ -585,8 +626,8 @@ namespace DragDropSave.DragAndDrop
             canvas.Children.Add(NewElement.line);
             canvas.Children.Add(NewElement.ellipseDebut);
             canvas.Children.Add(NewElement.ellipseFin);
-            
-            canvas.Children.Add(NewElement);
+
+            //  canvas.Children.Add(NewElement);
             Canvas.SetZIndex(NewElement, numberOfElement);
         }
         #endregion
@@ -614,23 +655,23 @@ namespace DragDropSave.DragAndDrop
         private int _estSurvolepos;
         public int estSurvolepos
         {
-        get { return _estSurvolepos; }
-        set 
-        {
+            get { return _estSurvolepos; }
+            set
+            {
                 _estSurvolepos = value;
-        }
+            }
         }
 
         public bool itemSurvole(Ellipse link)
-         {
+        {
 
             Point hg = new Point(Canvas.GetLeft(link), Canvas.GetTop(link));
             Point hd = new Point(hg.X + link.Width, hg.Y);
             Point bg = new Point(hg.X, hg.Y + link.Height);
             Point bd = new Point(hg.X + link.Width, hg.Y + link.Height);
 
-            for(int i = 0; i < featuresDictionary.Count; i++)
-             {
+            for (int i = 0; i < featuresDictionary.Count; i++)
+            {
                 UserControlJustine features = featuresDictionary[i];
                 Point hgf = new Point(Canvas.GetLeft(features), Canvas.GetTop(features));
                 Point hdf = new Point(hgf.X + features.Width, hgf.Y);
@@ -642,7 +683,7 @@ namespace DragDropSave.DragAndDrop
                 bool right = hdf.X > hd.X;
                 bool down = bgf.Y > bg.Y;
 
-                if(left && up && right && down)
+                if (left && up && right && down)
                 {
                     estSurvolepos = i;
                     return (true);
@@ -653,7 +694,7 @@ namespace DragDropSave.DragAndDrop
                 }
             }
             return (false);
-         }
+        }
 
         List<int> areOnThisIn = new List<int>();
         List<int> areOnThisOut = new List<int>();
@@ -664,15 +705,15 @@ namespace DragDropSave.DragAndDrop
 
             for (int i = 0; i < ConnectorDictionary.Count; i++)
             {
-                double w = ConnectorDictionary[i].ellipseDebut.Width + ConnectorDictionary[i].ellipseDebut.Width /2;
-                double h = ConnectorDictionary[i].ellipseDebut.Height + ConnectorDictionary[i].ellipseDebut.Height /2;
+                double w = ConnectorDictionary[i].ellipseDebut.Width + ConnectorDictionary[i].ellipseDebut.Width / 2;
+                double h = ConnectorDictionary[i].ellipseDebut.Height + ConnectorDictionary[i].ellipseDebut.Height / 2;
 
-                Point hg = new Point(Canvas.GetLeft(feature) - w/2, Canvas.GetTop(feature) - h/2);
-                Point hd = new Point(hg.X + feature.Width + w , hg.Y - h/2);
-                Point bg = new Point(hg.X - w/2, hg.Y + feature.Height + h/2);
+                Point hg = new Point(Canvas.GetLeft(feature) - w / 2, Canvas.GetTop(feature) - h / 2);
+                Point hd = new Point(hg.X + feature.Width + w, hg.Y - h / 2);
+                Point bg = new Point(hg.X - w / 2, hg.Y + feature.Height + h / 2);
                 Point bd = new Point(hg.X + feature.Width + w, hg.Y + feature.Height + h);
 
-                
+
 
                 Point hgf = new Point(Canvas.GetLeft(ConnectorDictionary[i].ellipseDebut), Canvas.GetTop(ConnectorDictionary[i].ellipseDebut));
                 Point hdf = new Point(hgf.X + ConnectorDictionary[i].ellipseDebut.Width, hgf.Y);
@@ -703,7 +744,7 @@ namespace DragDropSave.DragAndDrop
                 Point bdf2 = new Point(hgf2.X + ConnectorDictionary[i].ellipseFin.Width, hgf2.Y + ConnectorDictionary[i].ellipseFin.Height);
 
                 bool left2 = hgf2.X > hg2.X;
-                bool up2 = hgf2.Y > hg2.Y; 
+                bool up2 = hgf2.Y > hg2.Y;
                 bool right2 = hdf2.X < hd2.X;
                 bool down2 = bgf2.Y < bg2.Y;
 
@@ -715,5 +756,8 @@ namespace DragDropSave.DragAndDrop
         }
         #endregion
 
+        
     }
+
+  
 }
