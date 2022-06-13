@@ -57,13 +57,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Connecteur.xaml.cs">
-      <DependentUpon>Connecteur.xaml</DependentUpon>
+    <Compile Include="Node.xaml.cs">
+      <DependentUpon>Node.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControlJustine.xaml.cs">
-      <DependentUpon>UserControlJustine.xaml</DependentUpon>
+    <Compile Include="Feature.xaml.cs">
+      <DependentUpon>Feature.xaml</DependentUpon>
     </Compile>
-    <Page Include="Connecteur.xaml">
+    <Page Include="Node.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -86,7 +86,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControlJustine.xaml">
+    <Page Include="Feature.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

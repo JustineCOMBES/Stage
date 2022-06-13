@@ -10,7 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -18,31 +18,21 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
-        <DragAndDrop:ItemsToMove x:Name="DragAndDropCanvas" Color="Blue" Grid.Row="0" Grid.ColumnSpan="8"/>
+        <DragAndDrop:ItemsToMove x:Name="DragAndDropCanvas" Grid.Row="0" Grid.ColumnSpan="8"/>
 
-        <Button Grid.Row="1" Grid.Column="2" Background="LawnGreen" Click="savebutton_Click" x:Name="savebutton">
-            Save
+
+        <Button Grid.Row="1" Grid.Column="1" Background="LightSkyBlue" Click="addbutton_Click" x:Name="addbutton">
+            Add new feature
         </Button>
-        <Button Grid.Row="1" Grid.Column="3" Background="Orange" Click="loadbutton_Click" x:Name="loadbutton">
-            Load
-        </Button>
-        <Button Grid.Row="1" Grid.Column="4" Background="IndianRed" Click="addbutton_Click" x:Name="addbutton">
-            Create a new shape
-        </Button>
-        <Button Grid.Row="1" Grid.Column="1" Background="LightSkyBlue" Click="clearbutton_Click" x:Name="clearbutton">
+        <Button Grid.Row="1" Grid.Column="2" Background="IndianRed" Click="clearbutton_Click" x:Name="clearbutton">
             Clear all
         </Button>
-        <Button Grid.Row="1" Grid.Column="5" Background="Fuchsia" Click="addConnectorbutton_Click" x:Name="addConnectorbutton">
-            Add Connector
+        <Button Grid.Row="1" Grid.Column="3" Background="GreenYellow" Click="addConnectorbutton_Click" x:Name="addConnectorbutton">
+            Add new node
         </Button>
-        <Button Grid.Row="1" Grid.Column="6" Background="Yellow" Click="RemoveSelectedbutton_Click" x:Name="RemoveSelectedbutton">
-            Remove selected
-        </Button>
+
     </Grid>
 </Window>

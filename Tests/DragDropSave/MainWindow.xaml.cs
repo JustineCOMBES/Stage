@@ -27,20 +27,10 @@ namespace DragDropSave
             InitializeComponent();
         }
 
-        private void savebutton_Click(object sender, RoutedEventArgs e)
-        {
-            DragAndDropCanvas.save();
-        }
-
-        private void loadbutton_Click(object sender, RoutedEventArgs e)
-        {
-            DragAndDropCanvas.load();
-        }
-        
         private void addbutton_Click(object sender, RoutedEventArgs e)
         {
-            DragAndDropCanvas.addItem();
-         }
+            DragAndDropCanvas.AddFeature();
+        }
 
         private void clearbutton_Click(object sender, RoutedEventArgs e)
         {
@@ -49,12 +39,7 @@ namespace DragDropSave
 
         private void addConnectorbutton_Click(object sender, RoutedEventArgs e)
         {
-            DragAndDropCanvas.addConnector();
-        }
-
-        private void RemoveSelectedbutton_Click(object sender, RoutedEventArgs e)
-        {
-            DragAndDropCanvas.clearOne();
+            DragAndDropCanvas.AddNode();
         }
     }
 }

@@ -18,9 +18,9 @@ using System.Windows.Controls.Primitives;
 namespace DragDropSave
 {
     /// <summary>
-    /// Logique d'interaction pour UserControlJustine.xaml
+    /// Logique d'interaction pour Feature.xaml
     /// </summary>
-    public partial class UserControlJustine : UserControl, INotifyPropertyChanged
+    public partial class Feature : UserControl, INotifyPropertyChanged
     {
         private List<int> _InputNodeId = new List<int>();
         public List<int> InputNodeId
@@ -44,7 +44,7 @@ namespace DragDropSave
         }
 
 
-        public UserControlJustine()
+        public Feature()
         {
             InitializeComponent();
             this.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
@@ -53,7 +53,7 @@ namespace DragDropSave
         #region Added functions
 
         public static readonly DependencyProperty IsChildHitTestVisibleProperty =
-            DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(UserControlJustine), new PropertyMetadata(true));
+            DependencyProperty.Register("IsChildHitTestVisible", typeof(bool), typeof(Feature), new PropertyMetadata(true));
 
         public bool IsChildHitTestVisible
         {
@@ -62,7 +62,7 @@ namespace DragDropSave
         }
 
         public static readonly DependencyProperty ColorProperty =
-            DependencyProperty.Register("Color", typeof(Brush), typeof(UserControlJustine), new PropertyMetadata(Brushes.Black));
+            DependencyProperty.Register("Color", typeof(Brush), typeof(Feature), new PropertyMetadata(Brushes.Black));
 
         public Brush Color
         {
