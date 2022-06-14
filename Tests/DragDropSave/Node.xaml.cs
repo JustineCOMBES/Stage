@@ -23,30 +23,16 @@ namespace DragDropSave
     public partial class Node : UserControl
     {
         #region declaration graphique
+
         PointD pt1;
         PointD pt2;
 
-        private Ellipse _ellipseOutput;
-        public Ellipse ellipseDebut
-        {
-            get { return _ellipseOutput; }
-            set { _ellipseOutput = value; }
-        }
-        private Ellipse _ellipseInput;
-        public Ellipse ellipseFin
-        {
-            get { return _ellipseInput; }
-            set { _ellipseInput = value; }
-        }
+        public Ellipse ellipseDebut { get; set; }
 
-        private Line _line;
-        public Line line
-        {
-            get { return _line; }
-            set { _line = value; }
-        }
+        private Ellipse ellipseFin { get; set; }
+        private Line line { get; set; }
 
-        public List<Tuple<Ellipse, Line>> EllipseInputList = new List<Tuple<Ellipse, Line>>();
+        public List<Tuple<Ellipse, Line>> EllipseInputAndLineList = new List<Tuple<Ellipse, Line>>();
         #endregion
 
         public int _id;
@@ -103,7 +89,7 @@ namespace DragDropSave
             ellipseFin.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
             var toAdd = new Tuple<Ellipse, Line>(ellipseFin, line);
-            EllipseInputList.Add(toAdd);
+            EllipseInputAndLineList.Add(toAdd);
 
             Canvas.SetLeft(ellipseDebut, pt1.X - ellipseDebut.Width / 2);
             Canvas.SetTop(ellipseDebut, pt1.Y - ellipseDebut.Height / 2);
@@ -115,12 +101,12 @@ namespace DragDropSave
 
         public void MultiOutAdd()
         {
-            /// Pour ajouter une sortie liée à la même entrée
+            // Pour ajouter une sortie liée à la même entrée
             Ellipse ellipseToAdd = new Ellipse
             {
                 Name = "fin",
-                Width = 20,
-                Height = 20,
+                Width = 40,
+                Height = 40,
                 Fill = new SolidColorBrush(Colors.Blue)
             };
             ellipseToAdd.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
@@ -128,7 +114,7 @@ namespace DragDropSave
             Line lineToAdd = new Line
             {
                 Name = "line",
-                StrokeThickness = 4,
+                StrokeThickness = 10,
                 Stroke = System.Windows.Media.Brushes.Gray,
                 X1 = pt1.X,
                 Y1 = pt1.Y,
@@ -138,7 +124,7 @@ namespace DragDropSave
             lineToAdd.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
             var toAdd = new Tuple<Ellipse, Line>(ellipseToAdd, lineToAdd);
-            EllipseInputList.Add(toAdd);
+            EllipseInputAndLineList.Add(toAdd);
         }
 
         #region Added functions
@@ -178,6 +164,19 @@ namespace DragDropSave
                 {
                     IsChildHitTestVisible = false;
                     DragDrop.DoDragDrop(line, new DataObject(DataFormats.Serializable, line), DragDropEffects.Move);
+                    IsChildHitTestVisible = true;
+                }
+
+                if (sender is Ellipse name)
+                {
+                    IsChildHitTestVisible = false;
+                    DragDrop.DoDragDrop(name, new DataObject(DataFormats.Serializable, name), DragDropEffects.Move);
+                    IsChildHitTestVisible = true;
+                }
+                if (sender is Line name2)
+                {
+                    IsChildHitTestVisible = false;
+                    DragDrop.DoDragDrop(name2, new DataObject(DataFormats.Serializable, name2), DragDropEffects.Move);
                     IsChildHitTestVisible = true;
                 }
             }

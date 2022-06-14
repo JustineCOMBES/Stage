@@ -18,6 +18,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
 
@@ -33,6 +35,10 @@
         <Button Grid.Row="1" Grid.Column="3" Background="GreenYellow" Click="addConnectorbutton_Click" x:Name="addConnectorbutton">
             Add new node
         </Button>
+        <Button Grid.Row="1" Grid.Column="5" Background="Orange" Click="multiconnectorbutton_Click" x:Name="multiconnectorbutton">
+            Add multiconnector
+        </Button>
+        <TextBox Grid.Row="1" Grid.Column="4" x:Name="LabelName" MouseEnter="LabelName_MouseEnter" MouseLeave="LabelName_MouseLeave">Number of input</TextBox>
 
     </Grid>
 </Window>

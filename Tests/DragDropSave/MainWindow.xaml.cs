@@ -41,5 +41,28 @@ namespace DragDropSave
         {
             DragAndDropCanvas.AddNode();
         }
+
+        private void multiconnectorbutton_Click(object sender, RoutedEventArgs e)
+        {
+
+            int nb = int.Parse(LabelName.Text);
+            DragAndDropCanvas.AddMultiNode(nb);
+        }
+
+        private void LabelName_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (LabelName.Text == "")
+            {
+                LabelName.Text = "Number of input";
+            }
+        }
+
+        private void LabelName_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (LabelName.Text == "Number of input")
+            {
+                LabelName.Text = "";
+            }
+        }
     }
 }
