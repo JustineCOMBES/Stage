@@ -36,6 +36,7 @@ namespace DragDropSave
         #endregion
 
         public int _id;
+        public bool IsSingleNode;
 
         public double PositionX1;
         public double PositionY1;
@@ -48,6 +49,7 @@ namespace DragDropSave
         public Node(int id)
         {
             _id = id;
+            IsSingleNode = true;
 
             InitializeComponent();
 
@@ -55,6 +57,7 @@ namespace DragDropSave
             this.PositionEllipseInput = new PointD(50, 50);
 
             #region Graphique
+
             pt1 = PositionEllipseOutput;
             pt2 = PositionEllipseInput;
 
@@ -66,7 +69,8 @@ namespace DragDropSave
                 X1 = pt1.X,
                 Y1 = pt1.Y,
                 X2 = pt2.X,
-                Y2 = pt2.Y
+                Y2 = pt2.Y,
+                Tag = 0
             };
             line.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
@@ -84,7 +88,8 @@ namespace DragDropSave
                 Name = "fin",
                 Width = 40,
                 Height = 40,
-                Fill = new SolidColorBrush(Colors.Blue)
+                Fill = new SolidColorBrush(Colors.Blue),
+                Tag = 0
             };
             ellipseFin.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
@@ -101,13 +106,16 @@ namespace DragDropSave
 
         public void MultiOutAdd()
         {
+            IsSingleNode = false;
+
             // Pour ajouter une sortie liée à la même entrée
             Ellipse ellipseToAdd = new Ellipse
             {
                 Name = "fin",
                 Width = 40,
                 Height = 40,
-                Fill = new SolidColorBrush(Colors.Blue)
+                Fill = new SolidColorBrush(Colors.Blue),
+                Tag = EllipseInputAndLineList.Count
             };
             ellipseToAdd.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 
@@ -119,7 +127,8 @@ namespace DragDropSave
                 X1 = pt1.X,
                 Y1 = pt1.Y,
                 X2 = pt2.X,
-                Y2 = pt2.Y
+                Y2 = pt2.Y,
+                Tag = EllipseInputAndLineList.Count
             };
             lineToAdd.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
 

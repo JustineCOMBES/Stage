@@ -35,6 +35,7 @@ namespace DragDropSave.DragAndDrop
 
         Dictionary<int, Node> NodeDictionary = new Dictionary<int, Node>();
         Dictionary<int, Feature> FeatureDictionary = new Dictionary<int, Feature>();
+        Dictionary<int, TextBlock> TextLabelDictionary = new Dictionary<int, TextBlock>();
 
         private bool _ok = false;
         private bool _go = false;
@@ -80,7 +81,7 @@ namespace DragDropSave.DragAndDrop
                     Ellipse elementa = (Ellipse)element;
                     _ok = FeatureSurvole(elementa);
                 }
-                if (_ok)
+                if (_ok) // si un ellement est survole
                 {
                     Ellipse elementa = (Ellipse)element;
                     Tuple<int, string> sortie;
@@ -91,19 +92,21 @@ namespace DragDropSave.DragAndDrop
                     if (element == element2.ellipseDebut)
                     {
                         FeatureDictionary[estSurvolepos].OutputNodeId.Add(sortie.Item1);
-                        Line line = NodeDictionary[sortie.Item1].EllipseInputAndLineList[0].Item2;
 
-                        double posx = Canvas.GetLeft(estSurvole) + estSurvole.Width - NodeDictionary[sortie.Item1].ellipseDebut.Width / 2;
-                        double posy = Canvas.GetTop(estSurvole) + estSurvole.Height / 2 - NodeDictionary[sortie.Item1].ellipseDebut.Height / 2;
-                        if (!double.IsNaN(posx))
+                        foreach (var tf in NodeDictionary[sortie.Item1].EllipseInputAndLineList)
                         {
-                            Canvas.SetLeft(NodeDictionary[sortie.Item1].ellipseDebut, posx);
-                            line.X1 = Canvas.GetLeft(NodeDictionary[sortie.Item1].ellipseDebut) + NodeDictionary[sortie.Item1].ellipseDebut.Width / 2;
-                        }
-                        if (!double.IsNaN(posy))
-                        {
-                            Canvas.SetTop(NodeDictionary[sortie.Item1].ellipseDebut, posy);
-                            line.Y1 = Canvas.GetTop(NodeDictionary[sortie.Item1].ellipseDebut) + NodeDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                            double posx = Canvas.GetLeft(estSurvole) + estSurvole.Width - NodeDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                            double posy = Canvas.GetTop(estSurvole) + estSurvole.Height / 2 - NodeDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                            if (!double.IsNaN(posx))
+                            {
+                                Canvas.SetLeft(NodeDictionary[sortie.Item1].ellipseDebut, posx);
+                                tf.Item2.X1 = Canvas.GetLeft(NodeDictionary[sortie.Item1].ellipseDebut) + NodeDictionary[sortie.Item1].ellipseDebut.Width / 2;
+                            }
+                            if (!double.IsNaN(posy))
+                            {
+                                Canvas.SetTop(NodeDictionary[sortie.Item1].ellipseDebut, posy);
+                                tf.Item2.Y1 = Canvas.GetTop(NodeDictionary[sortie.Item1].ellipseDebut) + NodeDictionary[sortie.Item1].ellipseDebut.Height / 2;
+                            }
                         }
                     }
                     foreach(var tupleFin in element2.EllipseInputAndLineList) {
@@ -112,24 +115,21 @@ namespace DragDropSave.DragAndDrop
 
                         if (element == ellipseFin)
                         {
-                            FeatureDictionary[estSurvolepos].InputNodeId.Add(sortie.Item1);
+                            int key = 100 * element2._id + int.Parse(tupleFin.Item1.Tag.ToString());
+
+                            FeatureDictionary[estSurvolepos].InputNodeId.Add(key);
+
                             double posx = Canvas.GetLeft(estSurvole) - ellipseFin.Width / 2;
                             double posy = Canvas.GetTop(estSurvole) + estSurvole.Height / 2 - ellipseFin.Height / 2;
                             if (!double.IsNaN(posx))
                             {
-                                foreach (var tf in NodeDictionary[sortie.Item1].EllipseInputAndLineList)
-                                {
-                                    Canvas.SetLeft(tf.Item1, posx);
-                                    tf.Item2.X2 = Canvas.GetLeft(tf.Item1) + ellipseFin.Width / 2;
-                                }
+                                Canvas.SetLeft(tupleFin.Item1, posx);
+                                tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + ellipseFin.Width / 2;
                             }
                             if (!double.IsNaN(posy))
                             {
-                                foreach (var tf in NodeDictionary[sortie.Item1].EllipseInputAndLineList)
-                                {
-                                    Canvas.SetTop(tf.Item1, posy);
-                                    tf.Item2.Y2 = Canvas.GetTop(tf.Item1) + ellipseFin.Height / 2;
-                                }
+                                Canvas.SetTop(tupleFin.Item1, posy);
+                                tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + ellipseFin.Height / 2;
                             }
                         }
                     }
@@ -144,15 +144,15 @@ namespace DragDropSave.DragAndDrop
 
             if (data is UIElement element)
             {
-                
-                dropPosition = e.GetPosition(canvas);
 
-                int thisOne = new int();
-                
+                dropPosition = e.GetPosition(canvas); // pour connaitre la position de la souris
+
+               int thisOne = new int(); // utile dans _go
+
                 if (element is Line) // deplacer chaque ligne indépendemment !!
                 {
                     Line elementa = (Line)element;
-                    int sortie = whoIsTheConnectorLine(elementa);
+                    int sortie = whoIsTheConnectorLine(elementa); // on prend le connecteur a qui appartirnt la ligne
                     thisOne = sortie;
 
                     foreach (var tupleFin in NodeDictionary[sortie].EllipseInputAndLineList)
@@ -170,16 +170,17 @@ namespace DragDropSave.DragAndDrop
                         }
                         else // a explorer
                         {
-                            double g = Canvas.GetTop(tupleFin.Item1);
-                            double k = Canvas.GetLeft(tupleFin.Item1);
-                            Canvas.SetTop(tupleFin.Item1, g + dropPosition.Y + h / 2 - tupleFin.Item1.RenderSize.Height / 2);
-                            Canvas.SetLeft(tupleFin.Item1, k + dropPosition.X + w / 2 - tupleFin.Item1.RenderSize.Width / 2);
+                            Canvas.SetTop(tupleFin.Item1, dropPosition.Y + h / 2 - tupleFin.Item1.RenderSize.Height / 2);
+                            Canvas.SetLeft(tupleFin.Item1, dropPosition.X + w / 2 - tupleFin.Item1.RenderSize.Width / 2);
                         }
-
                         tupleFin.Item2.X1 = Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + NodeDictionary[sortie].ellipseDebut.Width / 2;
                         tupleFin.Item2.Y1 = Canvas.GetTop(NodeDictionary[sortie].ellipseDebut) + NodeDictionary[sortie].ellipseDebut.Height / 2;
                         tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + tupleFin.Item1.RenderSize.Width / 2;
                         tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + tupleFin.Item1.RenderSize.Height / 2;
+
+                        Canvas.SetLeft(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id], Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + (Canvas.GetLeft(tupleFin.Item1) - Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + tupleFin.Item1.Width / 2 - NodeDictionary[sortie].ellipseDebut.Width / 2) / 2 + TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id].RenderSize.Width / 2);
+                        Canvas.SetTop(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id], Canvas.GetTop(NodeDictionary[sortie].ellipseDebut) + (Canvas.GetTop(tupleFin.Item1) - Canvas.GetTop(NodeDictionary[sortie].ellipseDebut) + tupleFin.Item1.Height / 2 - NodeDictionary[sortie].ellipseDebut.Height / 2) / 2);
+
                     }
 
                     _go = true;
@@ -235,7 +236,7 @@ namespace DragDropSave.DragAndDrop
                 if (_go)
                 {
                     int sortie = thisOne;
-                    
+
                     foreach (var tupleFin in NodeDictionary[sortie].EllipseInputAndLineList)
                     {
                         tupleFin.Item2.X1 = Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + NodeDictionary[sortie].ellipseDebut.Width / 2;
@@ -243,6 +244,10 @@ namespace DragDropSave.DragAndDrop
 
                         tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + tupleFin.Item1.RenderSize.Width / 2;
                         tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + tupleFin.Item1.RenderSize.Height / 2;
+
+                        Canvas.SetLeft(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id], Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + (Canvas.GetLeft(tupleFin.Item1) - Canvas.GetLeft(NodeDictionary[sortie].ellipseDebut) + tupleFin.Item1.Width / 2 - NodeDictionary[sortie].ellipseDebut.Width / 2) / 2 + TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id].RenderSize.Width / 2);
+                        Canvas.SetTop(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie]._id], Canvas.GetTop(NodeDictionary[sortie].ellipseDebut) + (Canvas.GetTop(tupleFin.Item1) - Canvas.GetTop(NodeDictionary[sortie].ellipseDebut) + tupleFin.Item1.Height / 2 - NodeDictionary[sortie].ellipseDebut.Height / 2) / 2 );
+
                     }
                 }
 
@@ -259,10 +264,14 @@ namespace DragDropSave.DragAndDrop
 
                         tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + tupleFin.Item1.Width / 2;
                         tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + tupleFin.Item1.Height / 2;
+
+                        Canvas.SetLeft(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie.Item1]._id], Canvas.GetLeft(NodeDictionary[sortie.Item1].ellipseDebut) + (Canvas.GetLeft(tupleFin.Item1) - Canvas.GetLeft(NodeDictionary[sortie.Item1].ellipseDebut) + tupleFin.Item1.Width / 2 - NodeDictionary[sortie.Item1].ellipseDebut.Width / 2) / 2 + TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie.Item1]._id].RenderSize.Width / 2);
+                        Canvas.SetTop(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[sortie.Item1]._id], Canvas.GetTop(NodeDictionary[sortie.Item1].ellipseDebut) + (Canvas.GetTop(tupleFin.Item1) - Canvas.GetTop(NodeDictionary[sortie.Item1].ellipseDebut) + tupleFin.Item1.Height / 2 - NodeDictionary[sortie.Item1].ellipseDebut.Height / 2) / 2);
+
                     }
                 }
 
-                if (element is Feature)
+                if (element is Feature) 
                 {
                     Feature elementa = (Feature)element;
                     int nbin = elementa.InputNodeId.Count;
@@ -272,23 +281,27 @@ namespace DragDropSave.DragAndDrop
                     {
                         foreach (int i in elementa.InputNodeId)
                         {
-                            Node element2 = NodeDictionary[i];
+                            Tuple<int, int> answer = KeyReader(i);
+                            int nodeId = answer.Item1;
+                            int inputTag = answer.Item2;
 
-                            foreach (var tupleFin in NodeDictionary[i].EllipseInputAndLineList)
+                            Tuple<Ellipse, Line> tupleFin = NodeDictionary[nodeId].EllipseInputAndLineList[inputTag];
+
+                            double posx = Canvas.GetLeft(elementa) - tupleFin.Item1.Width / 2;
+                            double posy = Canvas.GetTop(elementa) + elementa.Height / 2 - tupleFin.Item1.Height / 2;
+                            if (!double.IsNaN(posx))
                             {
-                                double posx = Canvas.GetLeft(elementa) - tupleFin.Item1.Width / 2;
-                                double posy = Canvas.GetTop(elementa) + elementa.Height / 2 - tupleFin.Item1.Height / 2;
-                                if (!double.IsNaN(posx))
-                                {
-                                    Canvas.SetLeft(tupleFin.Item1, posx);
-                                    tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + tupleFin.Item1.Width / 2;
-                                }
-                                if (!double.IsNaN(posy))
-                                {
-                                    Canvas.SetTop(tupleFin.Item1, posy);
-                                    tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + tupleFin.Item1.Height / 2;
-                                }
+                                Canvas.SetLeft(tupleFin.Item1, posx);
+                                tupleFin.Item2.X2 = Canvas.GetLeft(tupleFin.Item1) + tupleFin.Item1.Width / 2;
                             }
+                            if (!double.IsNaN(posy))
+                            {
+                                Canvas.SetTop(tupleFin.Item1, posy);
+                                tupleFin.Item2.Y2 = Canvas.GetTop(tupleFin.Item1) + tupleFin.Item1.Height / 2;
+                            }
+                            Canvas.SetLeft(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[nodeId]._id], Canvas.GetLeft(NodeDictionary[nodeId].ellipseDebut) + (Canvas.GetLeft(tupleFin.Item1) - Canvas.GetLeft(NodeDictionary[nodeId].ellipseDebut) + tupleFin.Item1.Width / 2 - NodeDictionary[nodeId].ellipseDebut.Width / 2) / 2 + TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[nodeId]._id].RenderSize.Width / 2);
+                            Canvas.SetTop(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[nodeId]._id], Canvas.GetTop(NodeDictionary[nodeId].ellipseDebut) + (Canvas.GetTop(tupleFin.Item1) - Canvas.GetTop(NodeDictionary[nodeId].ellipseDebut) + tupleFin.Item1.Height / 2 - NodeDictionary[nodeId].ellipseDebut.Height / 2) / 2);
+
                         }
                     }
 
@@ -313,6 +326,9 @@ namespace DragDropSave.DragAndDrop
                                     Canvas.SetTop(NodeDictionary[i].ellipseDebut, posy);
                                     tupleFin.Item2.Y1 = Canvas.GetTop(NodeDictionary[i].ellipseDebut) + NodeDictionary[i].ellipseDebut.Height / 2;
                                 }
+                                Canvas.SetLeft(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[i]._id], Canvas.GetLeft(NodeDictionary[i].ellipseDebut) + (Canvas.GetLeft(tupleFin.Item1) - Canvas.GetLeft(NodeDictionary[i].ellipseDebut) + tupleFin.Item1.Width / 2 - NodeDictionary[i].ellipseDebut.Width / 2) / 2 + TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[i]._id].RenderSize.Width / 2);
+                                Canvas.SetTop(TextLabelDictionary[int.Parse(tupleFin.Item2.Tag.ToString()) + 100 * NodeDictionary[i]._id], Canvas.GetTop(NodeDictionary[i].ellipseDebut) + (Canvas.GetTop(tupleFin.Item1) - Canvas.GetTop(NodeDictionary[i].ellipseDebut) + tupleFin.Item1.Height / 2 - NodeDictionary[i].ellipseDebut.Height / 2) / 2);
+
                             }
                         }
                     }
@@ -323,6 +339,7 @@ namespace DragDropSave.DragAndDrop
                     for (int j = 0; j < FeatureDictionary.Count; j++)
                     {
                         IsOnThis(FeatureDictionary[j]);
+
                         bool exist;
                         bool exist2;
                         for (int i = 0; i < FeatureDictionary[j].InputNodeId.Count; i++)
@@ -330,7 +347,15 @@ namespace DragDropSave.DragAndDrop
                             exist = false;
                             foreach (int vin in _areOnThisIn)
                             {
-                                if (vin == FeatureDictionary[j].InputNodeId[i])
+                                Tuple<int, int> answer = KeyReader(vin);
+                                int nodeId = answer.Item1;
+                                int inputTag = answer.Item2;
+
+                                Tuple<int, int> reference = KeyReader(FeatureDictionary[j].InputNodeId[i]);
+                                int refNodeId = reference.Item1;
+                                int refInputTag = reference.Item2;
+
+                                if ((nodeId == refNodeId) && (inputTag == refInputTag))
                                 {
                                     exist = true;
                                 }
@@ -364,48 +389,8 @@ namespace DragDropSave.DragAndDrop
 
         #endregion
 
-        public void AddMultiNode(int NumberOfInput)
-        {
-            _numberOfElement += 1;
-            Node NewElement = new Node(1);
-
-            if (NodeDictionary.Count > 0)    NodeDictionary.Add(NodeDictionary.Keys.Max() + 1, NewElement);
-            else                             NodeDictionary.Add(0, NewElement);
-
-            for(int i = 2; i <= NumberOfInput; i++)
-            {
-                NewElement.MultiOutAdd();
-            }
-            
-
-            canvas.Children.Add(NewElement.ellipseDebut);
-
-            int pos = 50;
-            foreach (var element in NewElement.EllipseInputAndLineList)
-            {
-                canvas.Children.Add(element.Item1);
-                canvas.Children.Add(element.Item2);
-
-                Canvas.SetLeft(element.Item1, 100);
-                Canvas.SetTop(element.Item1, pos);
-                pos += 50;
-            }
-            Canvas.SetTop(NewElement.ellipseDebut, pos / 2);
-            foreach (var element in NewElement.EllipseInputAndLineList)
-            {
-                element.Item2.X1 = Canvas.GetLeft(NewElement.ellipseDebut) + NewElement.ellipseDebut.Width / 2;
-                element.Item2.Y1 = Canvas.GetTop(NewElement.ellipseDebut) + NewElement.ellipseDebut.Height / 2;
-
-                element.Item2.X2 = Canvas.GetLeft(element.Item1) + element.Item1.Width / 2;
-                element.Item2.Y2 = Canvas.GetTop(element.Item1) + element.Item1.Height / 2;
-            }
-            
-
-            Canvas.SetZIndex(NewElement, _numberOfElement);
-
-        }
-
-        #region Node finder & Zindex
+  
+        #region Node finder & Zindex + KeyReader
 
         public Tuple<int, string> whoIsTheConnector(Ellipse ellipse)
         {
@@ -456,6 +441,17 @@ namespace DragDropSave.DragAndDrop
             }
             return iMax + 1;
         }
+
+        private Tuple<int,int> KeyReader(int key)
+        {
+            /// Retourne l'ID du node en Item1 et le Tag de la Line en Item2
+            
+            int tag = key % 100;
+            int id = key / 100;
+            Tuple<int, int> answer = new Tuple<int, int>(id,tag);
+            return answer;
+        }
+
         #endregion
 
         #region Add & clear
@@ -476,8 +472,9 @@ namespace DragDropSave.DragAndDrop
 
         public void AddNode()
         {
+            
             _numberOfElement += 1;
-            Node NewElement = new Node(1);
+            Node NewElement = new Node(NodeDictionary.Count);
             if (NodeDictionary.Count > 0)
                 NodeDictionary.Add(NodeDictionary.Keys.Max() + 1, NewElement);
             else
@@ -490,10 +487,70 @@ namespace DragDropSave.DragAndDrop
             Canvas.SetZIndex(NewElement, _numberOfElement);
         }
 
+        public void AddMultiNode(int NumberOfInput)
+        {
+            if (NumberOfInput > 0)
+            {
+                _numberOfElement += 1;
+                Node NewElement = new Node(NodeDictionary.Count);
+
+                if (NodeDictionary.Count > 0) NodeDictionary.Add(NewElement._id, NewElement);
+                else NodeDictionary.Add(0, NewElement);
+
+                for (int i = 2; i <= NumberOfInput; i++)
+                {
+                    NewElement.MultiOutAdd();
+                }
+
+                canvas.Children.Add(NewElement.ellipseDebut);
+
+                int pos = 50;
+                int inc = pos;
+
+                foreach (var element in NewElement.EllipseInputAndLineList)
+                {
+                    canvas.Children.Add(element.Item1);
+                    canvas.Children.Add(element.Item2);
+
+                    Canvas.SetLeft(element.Item1, 100);
+                    Canvas.SetTop(element.Item1, pos);
+                    pos += inc;
+
+                }
+
+                Canvas.SetTop(NewElement.ellipseDebut, pos / 2);
+
+                foreach (var element in NewElement.EllipseInputAndLineList)
+                {
+                    element.Item2.X1 = Canvas.GetLeft(NewElement.ellipseDebut) + NewElement.ellipseDebut.Width / 2;
+                    element.Item2.Y1 = Canvas.GetTop(NewElement.ellipseDebut) + NewElement.ellipseDebut.Height / 2;
+
+                    element.Item2.X2 = Canvas.GetLeft(element.Item1) + element.Item1.Width / 2;
+                    element.Item2.Y2 = Canvas.GetTop(element.Item1) + element.Item1.Height / 2;
+
+                    TextBlock IdTag = new TextBlock();
+                    string msg = NewElement._id + "." + element.Item2.Tag;
+                    IdTag.Text = msg;
+                    canvas.Children.Add(IdTag);
+
+                    int key = 100 * NewElement._id + int.Parse(element.Item2.Tag.ToString());
+                    TextLabelDictionary.Add(key, IdTag);
+
+                    Canvas.SetLeft(IdTag, Canvas.GetLeft(NewElement.ellipseDebut) + (Canvas.GetLeft(element.Item1) - Canvas.GetLeft(NewElement.ellipseDebut) + element.Item1.Width / 2 - NewElement.ellipseDebut.Width / 2) / 2 + IdTag.RenderSize.Width/2);
+                    Canvas.SetTop(IdTag, Canvas.GetTop(NewElement.ellipseDebut) + (Canvas.GetTop(element.Item1) - Canvas.GetTop(NewElement.ellipseDebut) + element.Item1.Height / 2 - NewElement.ellipseDebut.Height / 2) / 2 - (inc/10));
+
+                    Canvas.SetZIndex(element.Item1,Canvas.GetZIndex(element.Item2)+1);
+                    Canvas.SetZIndex(NewElement.ellipseDebut, Canvas.GetZIndex(element.Item2) + 1);
+                }
+                Canvas.SetZIndex(NewElement, _numberOfElement);
+            }
+        }
+
         public void clearAll()
         {
             FeatureDictionary.Clear();
             NodeDictionary.Clear();
+            TextLabelDictionary.Clear();
             canvas.Children.Clear();
 
             _numberOfElement = 0;
@@ -584,7 +641,8 @@ namespace DragDropSave.DragAndDrop
 
                     if (left2 && up2 && right2 && down2)
                     {
-                        _areOnThisIn.Add(i);
+                        int key = i * 100 + int.Parse(tupleFin.Item1.Tag.ToString());
+                        _areOnThisIn.Add(key);
                     }
                 }
             }

@@ -25,6 +25,11 @@ namespace DragDropSave
         public MainWindow()
         {
             InitializeComponent();
+            LabelName.FontSize = 16;
+            addbutton.FontSize = 16;
+            clearbutton.FontSize = 16;
+            addConnectorbutton.FontSize = 16;
+            multiconnectorbutton.FontSize = 16;
         }
 
         private void addbutton_Click(object sender, RoutedEventArgs e)
@@ -39,7 +44,7 @@ namespace DragDropSave
 
         private void addConnectorbutton_Click(object sender, RoutedEventArgs e)
         {
-            DragAndDropCanvas.AddNode();
+            DragAndDropCanvas.AddMultiNode(1);
         }
 
         private void multiconnectorbutton_Click(object sender, RoutedEventArgs e)
