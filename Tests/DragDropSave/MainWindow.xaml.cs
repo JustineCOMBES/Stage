@@ -39,7 +39,7 @@ namespace DragDropSave
 
         private void clearbutton_Click(object sender, RoutedEventArgs e)
         {
-            DragAndDropCanvas.clearAll();
+            DragAndDropCanvas.ClearAll();
         }
 
         private void addConnectorbutton_Click(object sender, RoutedEventArgs e)

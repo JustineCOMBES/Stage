@@ -20,7 +20,7 @@ namespace DragDropSave
     /// Logique d'interaction pour Node.xaml
     /// </summary>
 
-    public partial class Node : UserControl
+    public partial class Node : System.Windows.Controls.UserControl
     {
         #region declaration graphique
 
@@ -82,6 +82,7 @@ namespace DragDropSave
                 Fill = new SolidColorBrush(Colors.Red)
             };
             ellipseDebut.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+            ellipseDebut.MouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(_OnRightClick);
 
             ellipseFin = new Ellipse
             {
@@ -192,6 +193,61 @@ namespace DragDropSave
 
         }
 
+        private void _OnRightClick(object sender, MouseEventArgs e)
+        {
+            ContextMenu cm = new ContextMenu();
+
+            cm.Items.Clear();
+
+            MenuItem RemoveAll = new MenuItem();
+            RemoveAll.Header = "Remove all";
+            cm.Items.Add(RemoveAll);
+
+            MenuItem RemoveOne = new MenuItem();
+            RemoveOne.Header = "Remove one";
+            cm.Items.Add(RemoveOne);
+
+            MenuItem AddOne = new MenuItem();
+            AddOne.Header = "Add one";
+            cm.Items.Add(AddOne);
+
+            ellipseDebut.ContextMenu = cm;
+
+            AddOne.Click += OnAddOne;
+            RemoveOne.Click += OnRemoveOne;
+            RemoveAll.Click += OnRemoveAll;
+        }
+
+        public event EventHandler<EventArgs> OnAddOneEvent;
+        public virtual void OnAddOne(object sender, EventArgs e)
+        {
+            var handler = OnAddOneEvent;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
+        }
+
+        public event EventHandler<EventArgs> OnRemoveOneEvent;
+        public virtual void OnRemoveOne(object sender, EventArgs e)
+        {
+            var handler = OnRemoveOneEvent;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
+        }
+
+        public event EventHandler<EventArgs> OnRemoveAllEvent;
+        public virtual void OnRemoveAll(object sender, EventArgs e)
+        {
+            var handler = OnRemoveAllEvent;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
+        }
+
         #endregion
     }
 
@@ -208,5 +264,6 @@ namespace DragDropSave
             Y = y;
         }
     }
+
     #endregion
 }

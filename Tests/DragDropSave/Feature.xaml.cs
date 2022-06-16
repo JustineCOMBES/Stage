@@ -26,12 +26,13 @@ namespace DragDropSave
         public List<int> InputNodeId
         {
             get { return _InputNodeId; }
-            set 
+            set
             {
                 _InputNodeId = value;
                 OnPropertyChanged("InputNodeId");
             }
         }
+
         private List<int> _OutputNodeId = new List<int>();
         public List<int> OutputNodeId
         {
@@ -39,15 +40,60 @@ namespace DragDropSave
             set
             {
                 _OutputNodeId = value;
-                OnPropertyChanged("OutputNodeId");
+                OnPropertyChanged("InputNodeId");
             }
         }
-
-
+        public int id;
         public Feature()
         {
             InitializeComponent();
             this.MouseMove += new System.Windows.Input.MouseEventHandler(_OnMouseMove);
+            this.MouseRightButtonDown += new System.Windows.Input.MouseButtonEventHandler(_OnRightClick);
+        }
+
+        private void _OnRightClick(object sender, MouseButtonEventArgs e)
+        {
+            ContextMenu cm = new ContextMenu();
+
+            cm.Items.Clear();
+
+            MenuItem Remove = new MenuItem();
+            Remove.Header = "Remove";
+            cm.Items.Add(Remove);
+
+            ComboBox Option = new ComboBox();
+            Option.Items.Add(1);
+            Option.Items.Add(2);
+            Option.Items.Add(3);
+            Option.Items.Add(4);
+            Option.Items.Add(5);
+            Option.SelectedIndex = 0;
+            cm.Items.Add(Option);
+
+            this.ContextMenu = cm;
+
+            Remove.Click += OnRemove;
+            Option.SelectionChanged += OnOption;
+        }
+
+        public event EventHandler<EventArgs> OnRemoveEvent;
+        public virtual void OnRemove(object sender, EventArgs e)
+        {
+            var handler = OnRemoveEvent;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
+        }
+
+        public event EventHandler<EventArgs> OnOptionEvent;
+        public virtual void OnOption(object sender, EventArgs e)
+        {
+            var handler = OnOptionEvent;
+            if (handler != null)
+            {
+                handler(this, new EventArgs());
+            }
         }
 
         #region Added functions
