@@ -326,7 +326,8 @@ namespace DragDropSave.DragAndDrop
                     }
                 }
 
-                if (element is Ellipse && FeatureDictionary.Count > 0) // vider les connecteurs des listes s'il ne sont plus sur le node
+                // vider les connecteurs des listes s'il ne sont plus sur le node
+                if (element is Ellipse && FeatureDictionary.Count > 0)
                 {
                     for (int j = 0; j < FeatureDictionary.Count; j++)
                     {
